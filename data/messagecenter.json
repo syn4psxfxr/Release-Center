@@ -1,0 +1,1450 @@
+[
+ {
+  "id": "MC1568702",
+  "title": "Adding in app browsing control policies",
+  "description": "Enterprise policies now control Copilot desktop app's built-in browser on Windows and Mac, covering security, privacy, content access, authentication, and permissions. Available worldwide, admins should enable browsing, align policies with existing governance, test with pilot users, and communicate changes. No compliance issues identified.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-25T23:41:39.000Z",
+  "url": "https://mc.merill.net/message/MC1568702",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1568700",
+  "title": "Microsoft 365 Copilot: Customize how citations are included when copying responses",
+  "description": "Microsoft 365 Copilot will add a customizable \"Copy with sources\" option by mid-December 2026, letting users choose whether to include citations when copying responses. It is enabled by default but can be turned off to copy text without citations. No admin action is needed.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-25T23:38:56.000Z",
+  "url": "https://mc.merill.net/message/MC1568700",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1481313",
+  "title": "Microsoft Purview | DLM: Legacy Teams retention policies that cover Copilot will be treated as Teams-only",
+  "description": "Starting mid-January 2027, legacy Microsoft Teams retention policies will apply only to Teams data, excluding Microsoft 365 Copilot interactions. Organizations must create separate retention policies for Copilot to maintain compliance. Existing Teams retention behavior remains unchanged, but action is required to cover Copilot data.",
+  "categories": [
+   "Microsoft Purview"
+  ],
+  "published": "2026-11-25T17:12:08.000Z",
+  "url": "https://mc.merill.net/message/MC1481313",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1567263",
+  "title": "Microsoft 365 Copilot: New notification option when pinning Copilot to the Windows taskbar",
+  "description": "Microsoft 365 introduces an optional notification for admins pinning Microsoft Copilot to the Windows taskbar for selected groups. This notifies users with an Open Copilot action, enhancing communication and adoption. Rollout begins late November 2026. Admins must enable and schedule notifications via the Microsoft 365 admin center.",
+  "categories": [
+   "Microsoft 365 suite"
+  ],
+  "published": "2026-11-24T22:45:53.000Z",
+  "url": "https://mc.merill.net/message/MC1567263",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1560920",
+  "title": "Copilot video creation in Clipchamp Video Hub is now live in Frontier Public",
+  "description": "Copilot video creation in Clipchamp Video Hub is now in public preview, enabling users to create and refine videos from documents and prompts using Copilot Credits. Admins must enable Anthropic models and configure spending policies. Videos export as MP4 with an AI watermark, and some preview limitations apply.",
+  "categories": [
+   "Microsoft Clipchamp"
+  ],
+  "published": "2026-11-24T18:13:16.000Z",
+  "url": "https://mc.merill.net/message/MC1560920",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1551148",
+  "title": "[Outlook for iOS and Android] Copilot Chat in Outlook UX improvements",
+  "description": "Copilot Chat in Outlook for iOS and Android is being updated with a refreshed, consistent design across Microsoft 365 apps, improved chat interface, prompts, and navigation. Rollout starts mid-December 2026, completing by late January 2027. No admin action or compliance concerns are required.",
+  "categories": [
+   "Exchange Online"
+  ],
+  "published": "2026-11-24T17:06:14.000Z",
+  "url": "https://mc.merill.net/message/MC1551148",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1556095",
+  "title": "Plugins in PowerPoint for Microsoft 365 Copilot [Mac]",
+  "description": "Plugins will be added to PowerPoint for Microsoft 365 Copilot on Mac, enhancing presentation capabilities. The rollout starts mid-November 2026 and completes by early December. Users can access plugins in Copilot, and admins can manage plugin access via the Microsoft 365 admin center. No compliance issues noted.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-11-24T17:05:55.000Z",
+  "url": "https://mc.merill.net/message/MC1556095",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1550540",
+  "title": "Microsoft 365 Copilot: Copilot Workspaces is replacing standalone agent selection with agentic chat",
+  "description": "Microsoft 365 Copilot Workspaces will replace standalone agent selection (Researcher, Analyst, Designer) with an agentic chat that applies skills based on user requests. This simplifies workflows without losing capabilities. The change begins December 2026 in Frontier preview, with no admin action required. Separate agents remain in the Copilot app.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-11-24T17:05:38.000Z",
+  "url": "https://mc.merill.net/message/MC1550540",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1558023",
+  "title": "Microsoft Copilot in PowerPoint for Windows, Mac, and the web: Introducing new sales-focused skills",
+  "description": "Microsoft Copilot in PowerPoint is introducing new sales-focused skills worldwide by late November 2026 to help sales teams prepare and refine presentations, work with sales data, and support sales conversations. No admin action is needed; users with licenses can enable these skills via the Sales plugin.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-11-24T17:05:20.000Z",
+  "url": "https://mc.merill.net/message/MC1558023",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1530595",
+  "title": "Microsoft Copilot Feedback UX update",
+  "description": "Microsoft Copilot is updating its thumbs-down feedback to include selectable categories and optional comments for clearer, actionable input. The rollout starts mid-November 2026, completing by early December, affecting users with Microsoft Entra ID and consumer accounts, excluding some environments. No admin action is needed.",
+  "categories": [
+   "Microsoft 365 Copilot Chat"
+  ],
+  "published": "2026-11-24T00:36:31.000Z",
+  "url": "https://mc.merill.net/message/MC1530595",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1562277",
+  "title": "Microsoft Teams: Copilot in channels provides channel-wide context",
+  "description": "Microsoft Teams is adding a channel-level Copilot feature allowing users to ask questions and summarize all posts and replies in a channel. Public preview starts December 2026 worldwide, with no action required. Copilot responses will include source citations and be available on Teams desktop and mobile.",
+  "categories": [
+   "Microsoft Teams"
+  ],
+  "published": "2026-11-20T23:36:02.000Z",
+  "url": "https://mc.merill.net/message/MC1562277",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1562275",
+  "title": "Microsoft 365 Copilot app: New search experience for Microsoft 365 users without a Microsoft 365 Copilot license",
+  "description": "Microsoft 365 is updating the Copilot app's search experience for users without a Copilot license, enabling modern search controls by default starting late November 2026. Users can toggle back to classic search. The update improves file and third-party content search while respecting access permissions.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-20T23:35:27.000Z",
+  "url": "https://mc.merill.net/message/MC1562275",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1562269",
+  "title": "Sync between Copilot desktop app and Microsoft Edge",
+  "description": "Optional sync of passwords, personal info, settings, and browsing history between Copilot desktop app and Microsoft Edge will roll out worldwide in December 2026. Sync is account-based, opt-in, excludes payment info, and aims to improve user continuity and organizational productivity. Review governance before enabling.",
+  "categories": [
+   "Microsoft 365 Copilot Chat"
+  ],
+  "published": "2026-11-20T23:31:47.000Z",
+  "url": "https://mc.merill.net/message/MC1562269",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1557754",
+  "title": "Microsoft Copilot: Continue using models after reaching usage limits with Copilot Credits",
+  "description": "Microsoft Copilot now allows continued use of models after license usage limits via usage-based billing (UBB) with Copilot Credits. Users see credit indicators and can choose between Auto mode or credit-consuming models. Admins manage access and spending through updated policies and controls. Rollout begins December 2026.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-20T17:47:55.000Z",
+  "url": "https://mc.merill.net/message/MC1557754",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1535647",
+  "title": "Microsoft Copilot app: Updates to Home and navigation",
+  "description": "Microsoft Copilot app updates include a new Home with integrated Chat, Cowork, Projects, and Workspaces. Projects organize related tasks and files without storing content, available on major platforms. Workspaces replace Notebooks for team collaboration. Rollout starts late October 2026; licensing and billing configurations affect access.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-20T17:11:31.000Z",
+  "url": "https://mc.merill.net/message/MC1535647",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1518034",
+  "title": "Clipchamp/ Copilot 'Create a video' experience is going to have an admin control available",
+  "description": "Microsoft Clipchamp is adding an admin policy control to manage user access to the AI video creation feature, defaulting to disabled. The feature is now only available from Clipchamp Home. Rollout begins late November 2026, with no action needed to keep the feature disabled.",
+  "categories": [
+   "Microsoft Clipchamp"
+  ],
+  "published": "2026-11-20T00:50:19.000Z",
+  "url": "https://mc.merill.net/message/MC1518034",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1560929",
+  "title": "Updates to Workforce Insights Agent (Frontier) for Admins in Microsoft 365 Copilot",
+  "description": "Microsoft 365 Copilot's Workforce Insights Agent (Frontier) adds a workspace for admins to configure organizational data and context, improving AI-driven responses. Rolling out mid-November 2026 for Frontier tenants, it requires specific admin roles and licensing, with controls for data access, configuration, and compliance.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-20T00:13:14.000Z",
+  "url": "https://mc.merill.net/message/MC1560929",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1560923",
+  "title": "Enhanced prompt categories for Microsoft 365 Copilot in Microsoft Copilot Dashboard and Agent 365 Business Analytics",
+  "description": "Microsoft 365 Copilot introduces 13 enhanced prompt categories replacing four legacy ones in the Copilot Dashboard and Agent 365 Business Analytics. This update, rolling out worldwide in December 2026, offers detailed insights into Copilot Chat usage by licensed users, with no admin action needed.",
+  "categories": [
+   "Microsoft Viva"
+  ],
+  "published": "2026-11-20T00:04:07.000Z",
+  "url": "https://mc.merill.net/message/MC1560923",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1560922",
+  "title": "Microsoft Copilot: In-app browsing will be enabled by default in the desktop app",
+  "description": "Microsoft Copilot desktop app will enable in-app browsing by default starting January 2027, allowing users to open websites shared in chat within the app alongside conversations. No action is needed unless organizations want to disable or manage this feature via policies.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-20T00:03:31.000Z",
+  "url": "https://mc.merill.net/message/MC1560922",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1560916",
+  "title": "Microsoft Copilot: GPT-6.2 Sol and Astra rolling out",
+  "description": "Microsoft Copilot is expanding AI model options with GPT-6.2 Sol and Astra, rolling out across Cowork, Copilot Studio, Word, Excel, PowerPoint, and Chat. Astra requires enabling the OpenAI subprocessor. Users with appropriate licenses and configurations get default access; no action is needed but reviewing settings and guidance is recommended.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-19T23:58:17.000Z",
+  "url": "https://mc.merill.net/message/MC1560916",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1532253",
+  "title": "Enhanced Copilot and AI controls for meetings",
+  "description": "Microsoft Teams is replacing the Copilot meeting policy with two policies—MeetingAI and TranscriptionWithMeetingAI—for clearer control over AI and transcription in meetings. New meeting options provide granular management of AI use. Rollout begins December 2026; existing settings will be automatically mapped with no admin action required.",
+  "categories": [
+   "Microsoft Teams"
+  ],
+  "published": "2026-11-19T22:31:02.000Z",
+  "url": "https://mc.merill.net/message/MC1532253",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1559641",
+  "title": "New Copilot experience in OneNote",
+  "description": "The new Copilot experience in OneNote enhances editing and reasoning across notes, ink, annotations, and files, enabling better information synthesis and content creation. Rollout starts November 2026 for Frontier Public and January 2027 worldwide on Windows and iPad; other platforms will follow later. No admin action needed.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-11-18T23:41:03.000Z",
+  "url": "https://mc.merill.net/message/MC1559641",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1559638",
+  "title": "New capabilities in Copilot Workspaces",
+  "description": "Copilot Notebooks is evolving into Copilot Workspaces with new collaboration features like activity feed, team presence, and group ownership. Rollout began November 2026 (Frontier Public) and worldwide availability starts December 2026. No immediate admin action is needed; update user guidance accordingly.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-18T23:36:20.000Z",
+  "url": "https://mc.merill.net/message/MC1559638",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1559633",
+  "title": "Microsoft SharePoint: Agent Chat web part to bring Copilot agents into SharePoint pages",
+  "description": "The Agent Chat web part lets SharePoint authors embed Microsoft 365 Copilot agents into pages for easier discovery and interaction. Rolling out from November 2026 to March 2027 worldwide, it requires no admin action. Permissions remain separate, and no compliance impact is expected.",
+  "categories": [
+   "SharePoint Online"
+  ],
+  "published": "2026-11-18T23:34:27.000Z",
+  "url": "https://mc.merill.net/message/MC1559633",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1559632",
+  "title": "Copilot Workspaces: Updated workspace memory",
+  "description": "Copilot in Workspaces now retains workspace memory to provide more relevant, consistent responses across sessions, improving productivity. Public Preview began November 2026; General Availability starts December 2026. No admin action is needed, but users should be informed of the update. No compliance issues identified.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-18T23:33:40.000Z",
+  "url": "https://mc.merill.net/message/MC1559632",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1486291",
+  "title": "Microsoft 365 Copilot: new guided Copilot onboarding experience",
+  "description": "Microsoft 365 Copilot introduces an optional, admin-led guided onboarding experience for Frontier participants, rolling out late October to November 2026. It personalizes training based on user roles and licenses, requires admin enablement, and supports reporting via Viva Learning to boost adoption and confidence.",
+  "categories": [
+   "Microsoft 365 suite",
+   "Microsoft Copilot (Microsoft 365)",
+   "Microsoft Viva"
+  ],
+  "published": "2026-11-18T17:18:44.000Z",
+  "url": "https://mc.merill.net/message/MC1486291",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1519871",
+  "title": "Copilot Code is rolling out in Frontier",
+  "description": "Copilot Code is expanding in the Frontier program to mobile (iOS/Android) and Mac, with local Sandbox on Windows for secure local execution. It supports GitHub Copilot CLI sign-in via Microsoft 365 accounts. Admins control access via licenses, spending policies, and execution location settings. Usage-based billing applies.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-18T17:11:58.000Z",
+  "url": "https://mc.merill.net/message/MC1519871",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1483844",
+  "title": "Microsoft Copilot: GPT 6.1 Sol and Claude Sonnet 5.5 beginning to roll out today",
+  "description": "Microsoft Copilot is rolling out GPT-6.1 Sol and Claude Sonnet 5.5 models starting September 30, 2026, across Cowork, Copilot Studio, Word, Excel, PowerPoint, and Chat. No admin action is required, but enabling Anthropic and OpenAI subprocessors affects model availability. Usage limits and notifications apply.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-11-17T23:30:04.000Z",
+  "url": "https://mc.merill.net/message/MC1483844",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1558033",
+  "title": "Microsoft 365 Copilot: Copilot Managed Runtime expands app building at general availability",
+  "description": "Microsoft 365 Copilot Managed Runtime, now generally available, enables IT-governed app building within tenant boundaries across Copilot Cowork, Studio, and Code. Admins manage apps, policies, and credits via the Microsoft 365 admin center. App building expands beyond the Frontier Program with environment routing and governance controls.",
+  "categories": [
+   "Microsoft 365 suite"
+  ],
+  "published": "2026-11-17T23:01:18.000Z",
+  "url": "https://mc.merill.net/message/MC1558033",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1557759",
+  "title": "Microsoft 365 Copilot: Use case classification for agent sessions and Copilot Cowork (Frontier public preview)",
+  "description": "Microsoft 365 Copilot introduces use case classification for agent sessions and Copilot Cowork activity in public preview starting mid-November 2026. Enabled by default for eligible Frontier tenants, it helps analyze AI usage and optimize investments. Admins can manage classification and AI value settings, with user opt-out options available.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-17T19:12:58.000Z",
+  "url": "https://mc.merill.net/message/MC1557759",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1557730",
+  "title": "Autopilot availability in Frontier",
+  "description": "Autopilot will roll out in Frontier Public starting November 17, 2026, as an always-on cloud agent requiring admin enablement and Microsoft 365 Copilot licensing. It features its own identity, security controls, and compliance considerations. Admins must configure access and billing; users create Autopilots via Copilot Home.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-17T18:38:43.000Z",
+  "url": "https://mc.merill.net/message/MC1557730",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1557727",
+  "title": "Agent 365 Business Analytics app experience",
+  "description": "Agent 365 Business Analytics, launching November 17, 2026, offers AI spend, usage, and value insights in Microsoft 365 admin center. Features include cost forecasting, use case classification, optimization recommendations, multi-tenant management, and export options. Access and privacy controls integrate with Viva Insights and Microsoft Entra ID.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)",
+   "Microsoft Viva"
+  ],
+  "published": "2026-11-17T18:36:21.000Z",
+  "url": "https://mc.merill.net/message/MC1557727",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1239927",
+  "title": "Microsoft Teams: Consecutive interpretation in Interpreter agent will be generally available",
+  "description": "Consecutive interpretation in Microsoft Teams Interpreter, currently in public preview, will roll out to general availability by late 2026. It offers turn-by-turn AI-generated spoken translation using usage-based billing with Copilot Credits. Organizations must set spending policies and have eligible meeting organizers with Copilot licenses.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-17T17:06:18.000Z",
+  "url": "https://mc.merill.net/message/MC1239927",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1556104",
+  "title": "Microsoft PowerPoint: Introducing plugins for Microsoft 365 Copilot",
+  "description": "Microsoft 365 Copilot in PowerPoint will gain plugins to enhance capabilities with specialized skills and connectors, improving presentation workflows. Rollout starts mid-November 2026 worldwide across Windows, Mac, and web. Admins should review and manage plugin access; no compliance issues identified.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-11-16T22:28:47.000Z",
+  "url": "https://mc.merill.net/message/MC1556104",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1556094",
+  "title": "Microsoft 365 Copilot: Learning Agent introduces personalized learning experiences",
+  "description": "Microsoft 365 Copilot Learning Agent will provide personalized learning experiences based on users' work context, roles, and activities. Rolling out from mid-November to late December 2026, it offers relevant prompts, faster upskilling, and continuous skill development, requiring specific admin and user settings to be enabled.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-16T22:26:09.000Z",
+  "url": "https://mc.merill.net/message/MC1556094",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1556093",
+  "title": "Microsoft 365 Copilot: Learning Agent introduces personalized upskilling notifications in Teams",
+  "description": "Microsoft 365 Copilot Learning Agent will deliver personalized upskilling notifications in Teams based on users' roles and usage. Rolling out from mid-November 2026, it helps users access relevant training within Teams, enhancing AI fluency and confidence. Admins can manage notifications via Viva Learning settings.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-16T22:25:29.000Z",
+  "url": "https://mc.merill.net/message/MC1556093",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1556090",
+  "title": "Plugins in PowerPoint for Microsoft 365 Copilot [Win32]",
+  "description": "Plugins will be added to PowerPoint for Microsoft 365 Copilot on Windows, enhancing presentation capabilities with new skills and connectors. Rollout starts mid-November 2026, completing by early December. Admins can manage plugin access via the Microsoft 365 admin center. No compliance issues identified.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-11-16T22:21:35.000Z",
+  "url": "https://mc.merill.net/message/MC1556090",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1449182",
+  "title": "Microsoft 365 Copilot: Copilot Pages and Notebooks Creation in OneDrive",
+  "description": "Starting mid-October 2026, newly created Microsoft 365 Copilot Pages and Notebooks will be stored in OneDrive for Business, enabling existing governance, compliance, data protection, retention, and lifecycle management. Existing Copilot content remains unchanged; no user action is required.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-16T17:10:38.000Z",
+  "url": "https://mc.merill.net/message/MC1449182",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1552391",
+  "title": "Microsoft Teams: Copilot in the Queues app on Mobile",
+  "description": "Microsoft Teams is introducing Copilot in the Queues app on Mobile, allowing reps and supervisors to ask questions about recorded calls for quick insights. Rolling out worldwide from late November to mid-December 2026, it requires Teams Premium and Microsoft 365 Copilot licenses, with no admin action needed before rollout.",
+  "categories": [
+   "Microsoft Teams"
+  ],
+  "published": "2026-11-13T23:46:48.000Z",
+  "url": "https://mc.merill.net/message/MC1552391",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1552389",
+  "title": "Microsoft 365 Copilot: Workforce Intelligence plugin available in Copilot Cowork",
+  "description": "The Workforce Intelligence plugin in Microsoft 365 Copilot Cowork, launching November 16, 2026, helps leaders explore organizational structure and skills via natural language. It respects existing data permissions, supports team learning, requires admin setup, and is not for employee evaluation or performance management.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-13T23:45:06.000Z",
+  "url": "https://mc.merill.net/message/MC1552389",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1552386",
+  "title": "Microsoft 365 Copilot: Page context for open tabs in the Copilot desktop app built-in browser",
+  "description": "Microsoft 365 Copilot desktop app will use content from open tabs in its built-in browser as page context for answering questions and summaries, scoped to the current conversation. Rolling out worldwide mid to late November 2026. No action required; verify browser enablement and governance settings.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-13T23:43:26.000Z",
+  "url": "https://mc.merill.net/message/MC1552386",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1536065",
+  "title": "Microsoft 365 Copilot: Suggestions to continue in another Copilot experience",
+  "description": "Microsoft 365 Copilot will suggest switching to a better-fit Copilot mode (e.g., Cowork) after a user’s chat prompt, maintaining conversation context. Rollout starts mid-November 2026 for Standard and mid-December 2026 for Deferred audiences. No admin action is required; inform users accordingly.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-13T18:30:38.000Z",
+  "url": "https://mc.merill.net/message/MC1536065",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1550533",
+  "title": "Scheduled prompts in Microsoft 365 Copilot are moving to native Copilot scheduling and the Tasks view",
+  "description": "Microsoft 365 Copilot is moving scheduled prompts from Power Platform to native Copilot scheduling, enabling automatic execution of one-time or recurring tasks within Microsoft 365 compliance boundaries. The Power Platform-based experience retires December 31, 2026. Users manage tasks via the Copilot app's Tasks > Scheduled view.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-12T16:15:07.000Z",
+  "url": "https://mc.merill.net/message/MC1550533",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1470885",
+  "title": "M365 Copilot: Tell Copilot what you need directly from the Copilot button in Word, Excel, and PowerPoint",
+  "description": "Microsoft 365 Copilot now features a prompt input directly on the Copilot button in Word, Excel, and PowerPoint, enabling faster, contextual content creation without leaving the workflow. Rolling out worldwide from September to December 2026 on Windows, macOS, and web, it requires no admin action but updates to training and documentation.",
+  "categories": [
+   "Microsoft 365 apps",
+   "Microsoft 365 Copilot Chat"
+  ],
+  "published": "2026-11-11T21:51:22.000Z",
+  "url": "https://mc.merill.net/message/MC1470885",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1546430",
+  "title": "'Add explainer video' Skill in PPT Copilot",
+  "description": "The rollout of the \"Add explainer video\" skill in PowerPoint Copilot is paused. This feature converts static slides into animated explainer videos for Frontier users on desktop, Mac, and web. No admin action or compliance concerns are required. Updates will be shared via Message center.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-11-11T18:37:46.000Z",
+  "url": "https://mc.merill.net/message/MC1546430",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1548047",
+  "title": "Microsoft Copilot Chat: New Study and Learn-only mode for Education",
+  "description": "Microsoft is introducing an IT-admin-controlled Study and Learn-only mode for Copilot Chat in education, launching mid-November 2026. This mode limits students to the Study and Learn agent, preserving productive struggle. It affects Starter Education license students and requires no action but can be enabled by admins via the Microsoft 365 admin center.",
+  "categories": [
+   "Microsoft 365 Copilot Chat"
+  ],
+  "published": "2026-11-11T00:54:53.000Z",
+  "url": "https://mc.merill.net/message/MC1548047",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1492151",
+  "title": "New Dynamics 365 Sales and Customer Service experiences across Teams, Copilot, and Outlook",
+  "description": "Microsoft is releasing new Dynamics 365 Sales and Customer Service experiences integrated into Teams, Copilot, and Outlook to enhance collaboration and customer data access. Key features include Sales and Service skills, Teams Channel Agent, and Sales Development Agent, with phased rollouts starting October 2026 and administrative controls required.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-11T00:40:55.000Z",
+  "url": "https://mc.merill.net/message/MC1492151",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1548004",
+  "title": "Microsoft 365 Copilot Chat: Filter responses by content source",
+  "description": "Microsoft 365 Copilot Chat now lets users filter responses by selecting specific content sources, ensuring answers are grounded only in chosen data while respecting permissions. This feature, enabled by default for licensed users, rolls out worldwide in mid-November 2026 with no required action but recommends reviewing connector names and permissions.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-10T23:58:34.000Z",
+  "url": "https://mc.merill.net/message/MC1548004",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1530611",
+  "title": "Office in Copilot brings the full power of Office into the Microsoft Copilot app",
+  "description": "Office in Copilot now integrates full Word, Excel, and PowerPoint capabilities within the Microsoft Copilot app, enabling creation, editing, and collaboration without leaving the app. Rollout completes by mid-November 2026. No admin action is required, but admins should inform users and review policies. Data access and AI capabilities are expanded.",
+  "categories": [
+   "Microsoft 365 Copilot Chat"
+  ],
+  "published": "2026-11-10T19:22:14.000Z",
+  "url": "https://mc.merill.net/message/MC1530611",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1546438",
+  "title": "Action may be required: Claude models in Copilot are coming into the EU Data Boundary and will be enabled by default",
+  "description": "Starting December 9, 2026, Claude models in Microsoft Copilot will be enabled by default for eligible EU and EFTA tenants, with data processing moved into the EU Data Boundary. Admins can opt out or limit access before that date via the Microsoft 365 admin center.",
+  "categories": [
+   "Microsoft 365 Copilot Chat"
+  ],
+  "published": "2026-11-10T01:07:53.000Z",
+  "url": "https://mc.merill.net/message/MC1546438",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1479277",
+  "title": "Microsoft Copilot: New ways to work across Microsoft Copilot and Microsoft 365",
+  "description": "Microsoft Copilot updates include a new Home experience, enhanced Office integration, Code and Autopilot features with usage-based billing, Copilot Managed Runtime for enterprise code, and general availability in SharePoint and OneDrive. Admins must configure spending policies and manage access via the Microsoft 365 admin center.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-09T23:03:39.000Z",
+  "url": "https://mc.merill.net/message/MC1479277",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1546354",
+  "title": "Discover usage-based billing (UBB) experiences like Cowork, Code, and Autopilot",
+  "description": "Usage-based billing experiences like Cowork, Code, and Autopilot will be visible by default to Microsoft 365 Copilot licensed users starting January 2027. New admin controls will allow organizations to manage access requests and provide custom guidance URLs. Existing spending policies still govern actual usage and billing.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-09T22:57:35.000Z",
+  "url": "https://mc.merill.net/message/MC1546354",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1478975",
+  "title": "Microsoft 365 Copilot: Use Microsoft Agent 365 agents as connected agents in declarative agents",
+  "description": "Microsoft 365 now supports Microsoft Agent 365 agents using the Agent2Agent protocol as connected agents in declarative agents, expanding integration options. Administrators manage and approve these agents via the Microsoft 365 admin center. Rollout began in August 2026 and completes by December 2026, enabling enhanced AI interactions and workflows.",
+  "categories": [
+   "Microsoft 365 Copilot Chat"
+  ],
+  "published": "2026-11-09T17:50:16.000Z",
+  "url": "https://mc.merill.net/message/MC1478975",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1509799",
+  "title": "Microsoft 365 Copilot: Legal plugins in Word and Cowork",
+  "description": "Microsoft 365 Copilot introduces legal plugins in Word and Cowork to help legal professionals summarize, draft, review, and redline documents using Microsoft 365 context and third-party sources. Rollout occurs from April to December 2026. Admins can enable or disable these plugins; no setup is required.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-11-09T17:47:55.000Z",
+  "url": "https://mc.merill.net/message/MC1509799",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1146821",
+  "title": "Rewrite with Microsoft 365 Copilot Chat coming soon to Edge for Business users",
+  "description": "Microsoft 365 Copilot Chat’s Writing Assistance will roll out in Edge for Business by late January 2027, enabled by default. Users can access it via right-click on editable text. Admins can control it with the InlineComposeEnabled policy. DLP policies may restrict its functionality on certain content.",
+  "categories": [
+   "Microsoft 365 Copilot Chat"
+  ],
+  "published": "2026-11-09T17:27:07.000Z",
+  "url": "https://mc.merill.net/message/MC1146821",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1545695",
+  "title": "App Blocks in M365 Copilot",
+  "description": "App Blocks in M365 Copilot enables interactive apps like calculators and dashboards within Copilot Chat conversations, enhancing user experience without leaving the chat. It rolls out worldwide from late October to early November 2026, affecting Microsoft 365 Copilot users, with no action or compliance issues required.",
+  "categories": [
+   "Microsoft 365 Copilot Chat"
+  ],
+  "published": "2026-11-09T14:41:17.000Z",
+  "url": "https://mc.merill.net/message/MC1545695",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1301714",
+  "title": "Microsoft Purview | Data Loss Prevention- DLP to restrict processing external emails in M365 Copilot and Copilot Chat",
+  "description": "Microsoft Purview is expanding Data Loss Prevention (DLP) to restrict Microsoft 365 Copilot and Copilot Chat from processing emails from external or untrusted domains. This new admin-configurable DLP control, rolling out in public preview June 2026 and general availability June 2027, excludes external emails from Copilot grounding while maintaining internal data use.",
+  "categories": [
+   "Microsoft 365 Copilot Chat",
+   "Microsoft Purview"
+  ],
+  "published": "2026-11-06T22:04:35.000Z",
+  "url": "https://mc.merill.net/message/MC1301714",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1542066",
+  "title": "Microsoft 365 Copilot: Changes to custom organizational data in MODS for Workforce Insights",
+  "description": "Microsoft 365 is retiring the Workforce Insights endpoint in MODS by November 18, 2026. Custom organizational data will now be ingested via the Microsoft 365 profile endpoint. Organizations using non-public attributes must join a private preview and switch before the deadline to continue data uploads.",
+  "categories": [
+   "Microsoft 365 suite"
+  ],
+  "published": "2026-11-06T21:34:19.000Z",
+  "url": "https://mc.merill.net/message/MC1542066",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1542062",
+  "title": "Copilot Cowork: Power Platform connectors now follow Microsoft 365 admin center settings",
+  "description": "Microsoft Copilot Cowork now supports Power Platform connectors managed via the Microsoft 365 admin center, allowing centralized control over connector use with third-party apps. Rollout completes by mid-November 2026. Admins should review and configure connector availability, noting that Power Platform DLP policies do not apply to Cowork.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)",
+   "Microsoft Copilot (Power Platform)",
+   "Power Platform"
+  ],
+  "published": "2026-11-06T21:32:47.000Z",
+  "url": "https://mc.merill.net/message/MC1542062",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1405506",
+  "title": "Microsoft OneNote: Multimodal recording in Copilot Notebooks on Windows",
+  "description": "Microsoft is introducing multimodal capture in Copilot Notebooks on Windows, enabling users to record audio, images, and notes together. Microsoft 365 Copilot then generates structured insights like summaries and action items. The feature rolls out worldwide by end of November 2026, requires a Copilot license, and can be disabled by admins.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-11-06T17:12:04.000Z",
+  "url": "https://mc.merill.net/message/MC1405506",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1307979",
+  "title": "Microsoft 365 Copilot: Copilot chat pane and Summary feature in OneNote Mobile (iPhone)",
+  "description": "Microsoft 365 Copilot introduces a new chat pane and Summary feature in OneNote Mobile (iPhone) for users with Copilot (Premium) licenses, enabling AI-generated summaries and note interaction. Rollout begins end of November 2026, with existing Copilot policies applying and no admin action required before deployment.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-11-06T17:09:16.000Z",
+  "url": "https://mc.merill.net/message/MC1307979",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1309746",
+  "title": "Microsoft 365 Copilot: Copilot chat pane and Summary feature in OneNote Mobile (Android)",
+  "description": "Microsoft 365 Copilot introduces a new Copilot chat pane and Summary feature in OneNote Mobile (Android) for users with Premium licenses, enabling AI-generated summaries and Q&A on notes. Rollout begins end of November 2026, with existing Copilot policies applying and no admin action required before deployment.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-11-06T17:06:43.000Z",
+  "url": "https://mc.merill.net/message/MC1309746",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1521609",
+  "title": "Create sales pitches with Copilot in PowerPoint",
+  "description": "A new Copilot skill in PowerPoint helps users create structured sales pitch presentations for various customer scenarios. It rolls out worldwide from late October to late November 2026 on Win32, Mac, and Web. No admin action or compliance concerns are required.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-11-06T16:54:35.000Z",
+  "url": "https://mc.merill.net/message/MC1521609",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1540513",
+  "title": "Microsoft SharePoint Online and OneDrive for the web: Updated search experience with Copilot Search",
+  "description": "SharePoint Online and OneDrive on the web are updating to a unified Copilot Search experience with natural-language prompts, AI summaries, and filters. Rollout starts mid-October 2026 (preview) and mid-January 2027 (general). Users can opt out during preview; minimal action required from organizations.",
+  "categories": [
+   "Microsoft OneDrive",
+   "SharePoint Online"
+  ],
+  "published": "2026-11-05T23:11:29.000Z",
+  "url": "https://mc.merill.net/message/MC1540513",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1540339",
+  "title": "Microsoft Planner: Planner capabilities in Copilot Cowork through the Planner Plugin",
+  "description": "The Planner Plugin integrates Microsoft Planner with Copilot Cowork, enabling task prioritization, completion assistance, plan creation, visual reporting, and cross-Microsoft 365 work using Planner data. It rolls out worldwide by November 2026, requires appropriate licenses, and offers admin and user controls for availability and use.",
+  "categories": [
+   "Planner"
+  ],
+  "published": "2026-11-05T21:16:48.000Z",
+  "url": "https://mc.merill.net/message/MC1540339",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1540330",
+  "title": "Opal (Frontier) - UBB Notification",
+  "description": "Opal (Frontier) is a Microsoft 365 Computer Use Agent requiring admin-controlled access and usage-based billing for Copilot Credits. Rolling out November 9, 2026, it affects tenant admins and users. Admins must configure billing, assign spending policies, and review cost controls before rollout. No compliance issues noted.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-05T21:12:57.000Z",
+  "url": "https://mc.merill.net/message/MC1540330",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1540258",
+  "title": "Power Automate - Information regarding the end of support for Copilot in the designer for cloud flows or agent flows.",
+  "description": "On November 30, 2026, Copilot in the designer for cloud flows or agent flows will have reached end of support. How does this affect me? Makers will no longer be able to use Copilot in the designer for cloud flows or agent flows. This deprecation doesn't delete, move, or change existing cloud flows or agent flows, including flows created or edited with Copilot. Makers will still be able to create, edit, test, and run cloud flows and agent flows in the designer, including starting from templates....",
+  "categories": [
+   "Microsoft Power Automate"
+  ],
+  "published": "2026-11-05T19:58:32.000Z",
+  "url": "https://mc.merill.net/message/MC1540258",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1539004",
+  "title": "Work IQ expands memory capabilities to agents",
+  "description": "Work IQ introduces a new MCP path, /memory/me/coreMemories, giving authorized agents read-only access to a user's personalized memory profile, including Custom Instructions, Saved Memories, and chat history insights. Rolling out globally in December 2026, access is controlled by default-enabled admin policies and respects user personalization settings.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-05T00:13:47.000Z",
+  "url": "https://mc.merill.net/message/MC1539004",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1539002",
+  "title": "Microsoft Copilot Chat: Planner Agent task assignment, catch-up, and Copilot memory integration",
+  "description": "Microsoft Copilot Chat's Planner Agent is enhanced with task assignment, scheduled task catch-up, and memory integration to improve task management and personalized responses. Rolling out worldwide in December 2026, it supports shared basic plans, larger plans, and offers improved speed, reliability, and user control without admin action needed.",
+  "categories": [
+   "Planner"
+  ],
+  "published": "2026-11-05T00:11:53.000Z",
+  "url": "https://mc.merill.net/message/MC1539002",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1538999",
+  "title": "Microsoft 365 Copilot: Copilot connectors in Work IQ APIs",
+  "description": "Microsoft 365 Copilot will extend Work IQ APIs to use data and tools from connected enterprise systems via Copilot connectors, enabling richer AI experiences without extra setup. Rollout starts late November 2026. Existing permissions, controls, and governance remain unchanged; no admin action is needed.",
+  "categories": [
+   "Microsoft 365 suite"
+  ],
+  "published": "2026-11-05T00:08:30.000Z",
+  "url": "https://mc.merill.net/message/MC1538999",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1519122",
+  "title": "Microsoft Copilot: UBB models in Chat and Word, Excel, and PowerPoint via the model selector",
+  "description": "Microsoft is rolling out usage-based billing (UBB) models for Copilot Chat and Copilot in Word, Excel, and PowerPoint starting November 2026. Users need a Copilot subscription with UBB enabled and allocated credits to access advanced AI models like GPT-6 Astra and Claude Fable 5.1. Admins manage access and credits.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-04T20:05:50.000Z",
+  "url": "https://mc.merill.net/message/MC1519122",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1537656",
+  "title": "Copilot access configuration for your education tenant",
+  "description": "A Data Privacy message regarding your organization is available within Message Center. The contents of this message can be accessed within Message Center by a Global Administrator or someone designated as a Message Center Privacy Reader. Please sign in to Admin Center to view the details of this message in the M365 Message center.",
+  "categories": [
+   "Microsoft 365 suite"
+  ],
+  "published": "2026-11-04T02:35:05.000Z",
+  "url": "https://mc.merill.net/message/MC1537656",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1537495",
+  "title": "Microsoft 365 Copilot: Discover featured AI Skills Navigator playlists in Learning Agent",
+  "description": "Microsoft 365 Copilot's Learning Agent will feature AI Skills Navigator playlists, offering curated learning resources via natural language queries. Rolling out worldwide in mid-November 2026, this enhances skill-building for users where AI Skills Navigator is enabled, with no action required but settings review recommended.",
+  "categories": [
+   "Microsoft 365 Copilot Chat"
+  ],
+  "published": "2026-11-03T23:04:12.000Z",
+  "url": "https://mc.merill.net/message/MC1537495",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1529481",
+  "title": "Microsoft PowerPoint: Prepare internal sales review Copilot skill",
+  "description": "Microsoft PowerPoint is introducing a new Copilot skill, Prepare internal sales review, to help users create executive sales summary presentations. The rollout began in late October 2026 and will complete by late November 2026, affecting PowerPoint on Windows, Mac, and web with no admin action required.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-11-03T17:20:30.000Z",
+  "url": "https://mc.merill.net/message/MC1529481",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1529477",
+  "title": "Microsoft PowerPoint: Review sales pipeline Copilot skill",
+  "description": "Microsoft PowerPoint is introducing a new Copilot skill, Review sales pipeline, to help users create or update sales pipeline and forecast presentations. The feature is rolling out worldwide from late October to late November 2026 on Windows, Mac, and web, requiring no admin action or changes to data handling.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-11-03T17:16:59.000Z",
+  "url": "https://mc.merill.net/message/MC1529477",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1529476",
+  "title": "Microsoft PowerPoint: Draft proposal response Copilot skill",
+  "description": "Microsoft PowerPoint is introducing a new Copilot skill, Draft proposal response, to help users create customer-specific proposal drafts. The rollout began in late October 2026 and will complete by late November 2026. No admin action is needed, and it does not change data processing or AI interaction methods.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-11-03T17:15:10.000Z",
+  "url": "https://mc.merill.net/message/MC1529476",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1529480",
+  "title": "Microsoft PowerPoint: Prepare customer review deck Copilot skill",
+  "description": "Microsoft PowerPoint is introducing a new Copilot skill, Prepare customer review deck, to help users create QBR presentations focused on customer goals and outcomes. The rollout began in late October 2026 and will complete by late November 2026, with no admin action required or changes to data handling.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-11-03T17:12:33.000Z",
+  "url": "https://mc.merill.net/message/MC1529480",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1536158",
+  "title": "Limits in Copilot Chat",
+  "description": "Microsoft is applying fair use limits to Copilot Chat features for users without a Microsoft 365 Copilot license, restricting access variably throughout the day. Limits affect web, desktop, and mobile apps, with notifications in-product. Admins cannot adjust limits but should inform help desk staff; no action is required.",
+  "categories": [
+   "Microsoft 365 Copilot Chat"
+  ],
+  "published": "2026-11-03T02:27:32.000Z",
+  "url": "https://mc.merill.net/message/MC1536158",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1536163",
+  "title": "Limits in Copilot Chat",
+  "description": "Microsoft is implementing fair use limits on Copilot Chat features for users without a Microsoft 365 Copilot license, starting November 9. Limits apply across platforms, vary daily, and cannot be adjusted by admins. Users will be notified in-product, and no action is required from organizations.",
+  "categories": [
+   "Microsoft 365 Copilot Chat"
+  ],
+  "published": "2026-11-03T02:26:28.000Z",
+  "url": "https://mc.merill.net/message/MC1536163",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1536062",
+  "title": "Changes to Word, Excel, and PowerPoint agents in Microsoft Copilot",
+  "description": "Microsoft 365 Copilot will replace standalone Word, Excel, and PowerPoint agents with integrated document creation and editing in Copilot Chat. Rollout starts mid-November 2026, completing by late December. Users must start new chats for edits; no admin action is needed, and existing files and permissions remain unchanged.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-11-03T00:13:51.000Z",
+  "url": "https://mc.merill.net/message/MC1536062",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1536053",
+  "title": "Microsoft 365 Copilot: New accounting capabilities in Excel and Cowork",
+  "description": "Microsoft 365 Copilot introduces new accounting features in Excel and Cowork for finance professionals to reconcile accounts, prepare journal entries, analyze performance, and support budgeting and compliance. Available from late October 2026 (preview) and November 13, 2026 (general availability), it requires Copilot licenses and respects data permissions.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-11-03T00:08:36.000Z",
+  "url": "https://mc.merill.net/message/MC1536053",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1474458",
+  "title": "Microsoft Copilot (Microsoft 365): Power BI reports as references in Copilot Notebooks",
+  "description": "Microsoft Copilot Notebooks now support adding Power BI reports as references, enhancing summaries with real business data. Public preview began late September 2026; general availability is delayed to late November through mid-December 2026. No extra setup is needed if Power BI and Copilot are enabled.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-11-02T23:04:13.000Z",
+  "url": "https://mc.merill.net/message/MC1474458",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1454113",
+  "title": "Microsoft Copilot Word: Document summarization experience moving",
+  "description": "Starting September 2026, Microsoft Word's document summarization will move from the Top of Doc to other Copilot surfaces, maintaining the same AI-powered capability. Users can access summaries via Copilot prompts. No admin action is needed, but update training and inform users of this change.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-11-02T17:44:21.000Z",
+  "url": "https://mc.merill.net/message/MC1454113",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1187682",
+  "title": "Microsoft Edge: Microsoft 365 Copilot will support summarization and contextual grounding",
+  "description": "Microsoft Edge for Business now supports Microsoft 365 Copilot Chat to summarize and provide context from multiple open tabs and YouTube videos. The feature is off by default, respects existing Data Loss Prevention (DLP) policies, requires Entra ID sign-in, and is managed via Edge and DLP policies.",
+  "categories": [
+   "Microsoft 365 suite"
+  ],
+  "published": "2026-10-30T20:15:28.000Z",
+  "url": "https://mc.merill.net/message/MC1187682",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1302906",
+  "title": "Microsoft 365 Copilot: Schedule prompts in Agent Builder",
+  "description": "Microsoft 365 Copilot's Agent Builder will enable users to create scheduled workflows that run prompts automatically on hourly, daily, weekly, monthly, or yearly cadences. This feature, rolling out mid-November to mid-December 2026, is user-specific, enabled by default, and requires no admin action.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-10-30T16:26:45.000Z",
+  "url": "https://mc.merill.net/message/MC1302906",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1530959",
+  "title": "Microsoft 365 Copilot Chat: View memory sources used to personalize responses",
+  "description": "Microsoft 365 Copilot Chat will show users which memories and past chats influenced personalized responses, with inline citations linking to sources. This feature requires a Premium license, rolls out in late October 2026, respects memory settings, and allows users to review or delete saved memories. No action is needed.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-10-29T23:12:21.000Z",
+  "url": "https://mc.merill.net/message/MC1530959",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1530951",
+  "title": "Microsoft PowerPoint: Assess templates for use with Copilot in Brand Kits",
+  "description": "Microsoft PowerPoint's new Template Assessment in Brand Kits helps Brand Managers evaluate and improve templates for better Copilot compatibility, requiring a Microsoft 365 Copilot (Premium) license. It rolls out worldwide from mid to late October 2026. No action needed; organizations should inform Brand Managers.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-10-29T23:09:48.000Z",
+  "url": "https://mc.merill.net/message/MC1530951",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1530612",
+  "title": "Microsoft 365 admin center: Pin Microsoft Copilot app setting for users with a paid Microsoft 365 Copilot license",
+  "description": "Microsoft 365 admin center updates the Copilot taskbar pinning setting to allow pinning only for users with a paid Copilot license, removing the default \"Do not pin\" selection. Rollout starts December 2026. Admins must have Microsoft Entra group creation permissions to use the new option.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-10-29T18:33:59.000Z",
+  "url": "https://mc.merill.net/message/MC1530612",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1530609",
+  "title": "Engage plugin for Copilot Cowork and Autopilot: General availability",
+  "description": "The Engage plugin for Copilot Cowork and Autopilot will be generally available worldwide by mid-November 2026. It integrates Engage conversations into Copilot workflows, enabling users to access, summarize, and interact with community content without switching apps. The plugin is off by default and controlled by administrators.",
+  "categories": [
+   "Microsoft Viva"
+  ],
+  "published": "2026-10-29T18:31:02.000Z",
+  "url": "https://mc.merill.net/message/MC1530609",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1069563",
+  "title": "Microsoft 365 admin center: Usage reports to manage metered consumption costs for Microsoft 365 Copilot Chat (preview)",
+  "description": "Microsoft 365 admin center introduces a preview usage report for managing metered costs of Microsoft 365 Copilot Chat pay-as-you-go billing. It shows message consumption by tenant, user, and agent, with alerts for over 2000 messages. Rollout starts end of April 2027, no admin action needed.",
+  "categories": [
+   "Microsoft 365 suite"
+  ],
+  "published": "2026-10-28T18:20:34.000Z",
+  "url": "https://mc.merill.net/message/MC1069563",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1446805",
+  "title": "Microsoft Viva: Targeted audience surveys in the Copilot dashboard",
+  "description": "Microsoft Viva introduces targeted audience surveys in the Copilot dashboard, allowing authorized users (CxO or delegates) to send Viva Pulse surveys to predefined Copilot user groups based on dashboard data. The feature, enabled by default for eligible organizations, rolls out from mid-August to mid-December 2026, with admin controls available.",
+  "categories": [
+   "Microsoft Viva"
+  ],
+  "published": "2026-10-28T16:48:47.000Z",
+  "url": "https://mc.merill.net/message/MC1446805",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1528003",
+  "title": "Microsoft Excel: Edit with Copilot in Excel on iPhone",
+  "description": "Edit with Copilot in Excel on iPhone enables natural language editing and task continuation outside the app. Rolling out worldwide from late October to November 2026, it enhances mobile Excel use with secure Microsoft 365 integration, allowing quick data insights, edits, and formula updates without compliance concerns.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-10-27T23:21:15.000Z",
+  "url": "https://mc.merill.net/message/MC1528003",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1526676",
+  "title": "Microsoft 365 admin center: Manage authoritative sources for Microsoft 365 Copilot Search",
+  "description": "Admins with Global admin or reader roles can manage up to 100 authoritative SharePoint Online sites in Microsoft 365 Copilot Search via the admin center, enhancing search relevance. This AI-driven feature rolls out worldwide in late September 2026 and includes centralized governance and bulk import/export capabilities.",
+  "categories": [
+   "Microsoft 365 suite"
+  ],
+  "published": "2026-10-26T23:02:38.000Z",
+  "url": "https://mc.merill.net/message/MC1526676",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1441784",
+  "title": "Microsoft Copilot for Outlook: New Copilot entry point in Classic Outlook",
+  "description": "Microsoft is updating the Copilot entry point in Classic Outlook to a new location next to the ribbon, offering easier access and AI-powered contextual recommendations. The rollout begins mid-November 2026 worldwide, with no changes to licensing or admin settings. No action is required, but user communication is recommended.",
+  "categories": [
+   "Exchange Online"
+  ],
+  "published": "2026-10-26T22:56:12.000Z",
+  "url": "https://mc.merill.net/message/MC1441784",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1492154",
+  "title": "Enhanced M365 Copilot Memory - Copilot is now personalized with work data",
+  "description": "M365 Copilot now uses Microsoft 365 data to provide personalized work responses, rolling out worldwide from early October to November 2026. Users can disable this via settings, and admins can control it with enhancedPersonalizationSetting. No admin action or compliance issues are required.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-10-26T16:40:04.000Z",
+  "url": "https://mc.merill.net/message/MC1492154",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1523087",
+  "title": "Microsoft Teams Mobile: Ask Copilot from Search",
+  "description": "Microsoft Teams mobile will let users ask Copilot directly from the search box on iOS and Android, with suggestions appearing after typing two words and an Ask Copilot button on search results. This feature rolls out worldwide from mid to late November 2026, requiring no admin action.",
+  "categories": [
+   "Microsoft Teams"
+  ],
+  "published": "2026-10-23T23:09:28.000Z",
+  "url": "https://mc.merill.net/message/MC1523087",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1454973",
+  "title": "Manage Copilot connectors (Global setting) from Agent 365 - SetFederatedConnectors CLI toggle is retiring",
+  "description": "The setFederatedConnectors CLI toggle for managing Microsoft 365 Copilot connectors is retiring by August 25, 2026. Connector governance will unify under the Allowed agent types setting in the Microsoft 365 admin center. Administrators should update workflows and review settings before October 30, 2026.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-10-23T16:06:47.000Z",
+  "url": "https://mc.merill.net/message/MC1454973",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1521606",
+  "title": "Create project kickoff presentations with Copilot in PowerPoint",
+  "description": "Copilot in PowerPoint will help users create formal project kickoff presentations, aligning teams on goals, roles, milestones, and more. Rolling out worldwide mid to late October 2026 for PowerPoint on Win32, Mac, and Web. No admin action required; no compliance issues identified.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-10-22T23:13:10.000Z",
+  "url": "https://mc.merill.net/message/MC1521606",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1519861",
+  "title": "Outlook: Copilot Prioritize feature will be retired",
+  "description": "The Copilot Prioritize feature in Outlook will be retired starting October 26, 2026, with removal completed by March 2027. It will be removed from all Outlook clients without requiring opt-in. No admin action is needed, but users should be notified and support materials updated accordingly.",
+  "categories": [
+   "Exchange Online"
+  ],
+  "published": "2026-10-22T16:54:23.000Z",
+  "url": "https://mc.merill.net/message/MC1519861",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1519856",
+  "title": "Projects in Copilot",
+  "description": "Projects in Copilot unify related chats, Cowork tasks, files, and context in one place, reducing repeated explanations. Available now in Cowork-tab (Windows, Mac, Web), with rollout to Chat and Cowork on Frontier soon. Files remain in OneDrive with existing permissions; no action or compliance concerns required.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-10-21T23:25:43.000Z",
+  "url": "https://mc.merill.net/message/MC1519856",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1519842",
+  "title": "Microsoft OneNote: JPG and PNG references in Copilot Notebooks",
+  "description": "Microsoft OneNote now supports using JPG and PNG images as knowledge sources in Copilot Notebooks, enabling Copilot to extract and use visual content for generating outputs. The feature is globally available since October 2026, requires no admin action, and affects users with Copilot Notebook access.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-10-21T23:15:15.000Z",
+  "url": "https://mc.merill.net/message/MC1519842",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1519841",
+  "title": "Microsoft OneNote: CSV and TSV references in Copilot Notebooks",
+  "description": "Microsoft OneNote now supports using CSV and TSV files as knowledge sources in Copilot Notebooks, enhancing content generation with structured data. The feature is globally available since mid-October 2026, requires no user action, and automatically enables for tenants with existing CSV/TSV Copilot permissions.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-10-21T23:14:28.000Z",
+  "url": "https://mc.merill.net/message/MC1519841",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1266912",
+  "title": "Microsoft 365 Copilot: Intelligent Summaries in Copilot Dashboard",
+  "description": "Microsoft 365 Copilot Dashboard will automatically provide AI-generated intelligent summaries starting November 2026, highlighting adoption trends and usage insights for admins. No configuration is needed, existing permissions remain, and there is no user impact. Organizations can notify teams or update documentation if desired.",
+  "categories": [
+   "Microsoft Viva"
+  ],
+  "published": "2026-10-20T22:37:56.000Z",
+  "url": "https://mc.merill.net/message/MC1266912",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1515940",
+  "title": "Microsoft OneDrive: Copilot actions in the File Explorer context menu are being retired",
+  "description": "Microsoft is retiring several OneDrive Copilot actions from the File Explorer context menu by early December 2026, simplifying usage. Users can still access Copilot features via right-click \"Ask Copilot,\" the File Explorer Home icon, or the OneDrive activity center. No admin action is needed.",
+  "categories": [
+   "Microsoft OneDrive"
+  ],
+  "published": "2026-10-20T17:35:15.000Z",
+  "url": "https://mc.merill.net/message/MC1515940",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1288531",
+  "title": "Microsoft Viva - Copilot Analytics: Export agent data from the Agent Dashboard",
+  "description": "Microsoft Viva will add a new export feature in the Agent Dashboard by mid-November 2026, allowing eligible users with at least 50 Copilot licenses to download de-identified Copilot agent usage data for up to six months. Admins can manage or disable this feature via Viva Feature Access Management.",
+  "categories": [
+   "Microsoft Viva"
+  ],
+  "published": "2026-10-20T16:54:59.000Z",
+  "url": "https://mc.merill.net/message/MC1288531",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1515930",
+  "title": "Cowork browser use setting renamed to Browser use in Microsoft Copilot",
+  "description": "The Cowork settings panel in Microsoft Copilot is renamed to Browser use in Microsoft Copilot to improve discoverability. This change, rolling out in mid-October 2026, does not affect functionality or configurations. No action is required; admins will find the setting under the new name.",
+  "categories": [
+   "Microsoft 365 suite"
+  ],
+  "published": "2026-10-19T23:18:23.000Z",
+  "url": "https://mc.merill.net/message/MC1515930",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1515927",
+  "title": "Microsoft 365 Copilot: Critique and Council preview experiences will retire",
+  "description": "Microsoft 365 Copilot's Critique and Council preview experiences in Researcher will retire between late October and mid-November 2026. These features will no longer be accessible, but Researcher and Analyst remain available. Organizations should inform users, update guidance, and notify help desks accordingly. No compliance issues noted.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-10-19T23:17:01.000Z",
+  "url": "https://mc.merill.net/message/MC1515927",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1404326",
+  "title": "Microsoft 365 admin center: New usage report for Copilot connectors",
+  "description": "Microsoft 365 will introduce a new Copilot connectors usage report in the admin center by November 2026, showing usage across Copilot Chat, Search, and agents. It requires a Copilot (Premium) license, is enabled by default, and helps admins track adoption without impacting user workflows.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-10-16T21:43:38.000Z",
+  "url": "https://mc.merill.net/message/MC1404326",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1411727",
+  "title": "Copilot Notebooks: Suggested artifacts for faster content creation",
+  "description": "Copilot Notebooks will proactively suggest relevant Word, Excel, and PowerPoint artifacts based on notebook content and Microsoft 365 context, speeding content creation. Available by default to eligible users from early July 2026 (preview) and late August 2026 (general availability). No admin action required; future support for PDFs and Pages planned.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-10-16T20:34:33.000Z",
+  "url": "https://mc.merill.net/message/MC1411727",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1509805",
+  "title": "Microsoft Copilot: Additional content safety protections for students under 18",
+  "description": "Microsoft Copilot will automatically enable additional content safety protections for users aged 13-17, identified by the teen ageGroup in Entra ID, starting mid-October 2026. This ensures a safer, age-appropriate experience with no required configuration changes. Organizations should inform users and update documentation accordingly.",
+  "categories": [
+   "Microsoft 365 Copilot Chat"
+  ],
+  "published": "2026-10-15T23:13:50.000Z",
+  "url": "https://mc.merill.net/message/MC1509805",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1173208",
+  "title": "Microsoft Copilot Analytics: Data export public preview for Copilot metrics in the Copilot dashboard",
+  "description": "Microsoft is introducing a default-on public preview of a data export feature in the Copilot Dashboard for users with full company-level access. It enables export of de-identified, weekly Copilot usage metrics from the past six months to analyze adoption and optimize licensing. Requires 50+ Copilot licenses.",
+  "categories": [
+   "Microsoft Viva"
+  ],
+  "published": "2026-10-15T16:41:22.000Z",
+  "url": "https://mc.merill.net/message/MC1173208",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1440972",
+  "title": "Microsoft Edge: Upgraded Copilot new tab page",
+  "description": "Microsoft Edge is upgrading the Copilot new tab page to integrate Microsoft 365 Copilot chat, web search, and work content in one experience with enhanced chat, compose features, suggested actions, and a refreshed design. Rollout begins late September 2026, requiring a Copilot license and admin enablement.",
+  "categories": [
+   "Microsoft 365 suite"
+  ],
+  "published": "2026-10-13T20:46:08.000Z",
+  "url": "https://mc.merill.net/message/MC1440972",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1469329",
+  "title": "Build apps in Microsoft Copilot Studio and Copilot Cowork",
+  "description": "Microsoft Copilot Studio and Copilot Cowork preview app-building with natural-language AI, enabling makers to create, test, and publish apps using organizational data and policies. Copilot Credits manage usage and billing. Admins control access and governance via the Microsoft 365 admin center. Rollout started September 2026.",
+  "categories": [
+   "Microsoft 365 Copilot Chat"
+  ],
+  "published": "2026-10-13T18:25:32.000Z",
+  "url": "https://mc.merill.net/message/MC1469329",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1505609",
+  "title": "Microsoft 365 Copilot and Power Apps: Retirement of App Builder agent and vibe.powerapps.com",
+  "description": "Microsoft is retiring the App Builder agent and vibe.powerapps.com by November 30, 2026, consolidating app creation into Copilot Cowork and Microsoft Copilot Studio. New app creation in retired platforms ends mid-October 2026. Organizations must migrate existing apps before retirement using upcoming in-product migration tools.",
+  "categories": [
+   "Power Apps in Microsoft 365"
+  ],
+  "published": "2026-10-12T23:05:51.000Z",
+  "url": "https://mc.merill.net/message/MC1505609",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1505608",
+  "title": "Audio overviews on PDF",
+  "description": "Microsoft 365 Copilot mobile app's Audio Overviews on PDFs, which create AI-generated podcast-style summaries for commercial users, will be retired worldwide on October 30, 2026. After this date, the feature and previously generated audio overviews will no longer be available. No admin action is needed.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-10-12T23:05:23.000Z",
+  "url": "https://mc.merill.net/message/MC1505608",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1182703",
+  "title": "Microsoft Teams: Channel agent orchestration with GitHub, Asana, and Jira via Model Context Protocol (MCP)",
+  "description": "Microsoft Teams' Channel Agent integration with GitHub, Asana, and Jira via Model Context Protocol (MCP) rollout is paused. This feature enables task orchestration across tools within Teams, requires a Microsoft 365 Copilot license, and will be previewed with admin enablement when resumed.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-10-12T17:06:51.000Z",
+  "url": "https://mc.merill.net/message/MC1182703",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1493223",
+  "title": "Microsoft 365 Copilot: Skills in Copilot Chat",
+  "description": "Microsoft 365 Copilot Chat now supports customizable skills for task-specific instructions, usable by end users and deployable by admins. Skills integrate with plugins, are discoverable in the Agent Store, and work across Copilot Chat and Cowork. Rollout begins October 2026, with Information Barriers support in November.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-10-09T23:12:05.000Z",
+  "url": "https://mc.merill.net/message/MC1493223",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1462915",
+  "title": "Allow connections to copilot.cloud.microsoft before the Copilot URL redirect",
+  "description": "Starting September 2026, Microsoft will redirect users from m365.cloud.microsoft to copilot.cloud.microsoft. Organizations must allow connections to *.cloud.microsoft in network and security controls to avoid Copilot access disruptions. Validate connectivity, update allow lists, and coordinate with security teams before the redirect.",
+  "categories": [
+   "Microsoft 365 Copilot Chat"
+  ],
+  "published": "2026-10-08T18:57:24.000Z",
+  "url": "https://mc.merill.net/message/MC1462915",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1461152",
+  "title": "Create interactive slides in PowerPoint with Copilot skill (Windows and Mac)",
+  "description": "PowerPoint's new Copilot skill \"Create interactive slide\" enables users on Windows, Mac, and web to easily create interactive, full-slide visuals for complex concepts, timelines, and data. Attendees can interact independently in PowerPoint Live for Teams. Rollout begins mid-October 2026; a Copilot license is required.",
+  "categories": [
+   "Microsoft 365 apps"
+  ],
+  "published": "2026-10-07T23:26:36.000Z",
+  "url": "https://mc.merill.net/message/MC1461152",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ },
+ {
+  "id": "MC1479519",
+  "title": "Agents and Skills in CIQ",
+  "description": "Users can now insert Agents and Skills directly into prompts via the Context IQ menu or by typing / or @, enhancing discovery and productivity. This feature rolls out worldwide from mid-September to late September 2026, requires no user action, and supports CIQ and Copilot experiences.",
+  "categories": [
+   "Microsoft Copilot (Microsoft 365)"
+  ],
+  "published": "2026-10-05T19:28:17.000Z",
+  "url": "https://mc.merill.net/message/MC1479519",
+  "firstSeen": "2026-11-27T16:09:02.985Z",
+  "lastChanged": "2026-11-27T16:09:02.985Z"
+ }
+]

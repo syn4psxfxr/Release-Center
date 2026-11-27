@@ -1,0 +1,41 @@
+name: Atualizar dados do Copilot
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'   # a cada 6 horas (UTC)
+  workflow_dispatch: {}      # botão "Run workflow" para atualizar na hora
+  push:
+    branches: [main]
+    paths: ['scripts/**', '.github/workflows/update-data.yml']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Coletar Roadmap oficial + Message Center
+        run: node scripts/fetch-data.mjs
+
+      - name: Commit se houver mudanças
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/
+          if git diff --cached --quiet; then
+            echo "Sem novidades."
+          else
+            git commit -m "Atualiza dados do Copilot ($(date -u +'%Y-%m-%d %H:%M UTC'))"
+            git push
+          fi
