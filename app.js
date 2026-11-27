@@ -14,6 +14,14 @@
   const URGENT_RECENT_DAYS = 30; // undated urgent posts stay listed this long
   const NO_DATE_DAYS = 45;     // undated Message Center posts stay in "Upcoming" this long
   const STATUS_CLS = { 'Launched': 'st-launched', 'Rolling out': 'st-rolling', 'In development': 'st-dev', 'Cancelled': 'st-cancel' };
+  const CHANGED_DAYS = 60;     // a date change stays highlighted this long
+  // GitHub repository that holds readiness tasks (issues). Derived from the Pages URL, with a fallback for local runs.
+  const REPO = (() => {
+    const h = location.hostname, seg = location.pathname.split('/').filter(Boolean)[0];
+    if (h.endsWith('.github.io')) return `${h.replace('.github.io', '')}/${seg && !seg.includes('.') ? seg : h}`;
+    return 'syn4psxfxr/Release-Center';
+  })();
+  const FIELD_LABEL = { preview: 'Preview', ga: 'GA', start: 'Start', end: 'Completion' };
 
   const THEMES = [
     ['action', 'Action needed'],
@@ -57,7 +65,24 @@
     .replace(/^./, (c) => c.toUpperCase());
 
   // ---------- state ----------
-  const S = { roadmap: [], mc: [], meta: {}, view: 'upcoming', theme: '', soon: false, shown: PAGE, liveAt: null, all: [] };
+  const S = { roadmap: [], mc: [], meta: {}, tasks: new Map(), view: 'upcoming', theme: '', soon: false, shown: PAGE, liveAt: null, all: [] };
+
+  // ---------- date changes ----------
+  const fmtField = (c, d) => (c.field === 'preview' || c.field === 'ga') ? fmtMonthShort(d) : fmtDay(d);
+  function lastMove(x) {
+    const c = (x.dateChanges || []).slice(-1)[0];
+    return c && Date.now() - D(c.at) <= CHANGED_DAYS * DAY ? c : null;
+  }
+  const moveText = (c) => `${c.direction === 'later' ? 'Delayed' : 'Moved earlier'}: ${FIELD_LABEL[c.field] || c.field} ${fmtField(c, c.from)} → ${fmtField(c, c.to)}`;
+
+  // ---------- readiness tasks ----------
+  const taskKey = (i) => (i.src === 'rm' ? 'RM' + i.id : i.id).toUpperCase();
+  function taskStatus(t) {
+    if (!t) return null;
+    const labels = (t.labels || []).map((l) => l.toLowerCase());
+    if (t.state === 'closed') return t.stateReason === 'not_planned' || labels.some((l) => /not applicable|n\/a|wontfix/.test(l)) ? 'N/A' : 'Done';
+    return t.assignees?.length ? 'In progress' : 'To do';
+  }
 
   // Normalize both sources into one shape, and work out *when* each item lands
   function normRoadmap(x) {
@@ -65,7 +90,9 @@
       src: 'rm', id: x.id, key: `rm:${x.id}:${x.modified}`, title: x.title, description: x.description, url: x.url,
       status: x.status, date: x.modified, themes: x.themes || [], preview: x.preview, ga: x.ga,
       previewLabel: x.previewDate, gaLabel: x.gaDate, platforms: x.platforms || [], action: false,
+      changes: x.dateChanges || [], moved: lastMove(x), previousStatus: x.previousStatus,
     };
+    if (it.moved) it.themes = [...it.themes, 'changed'];
     if (x.status === 'In development' || x.status === 'Rolling out') {
       const ms = monthStartStr();
       const next = [['Preview', x.preview], ['GA', x.ga]].filter(([, d]) => d && d >= ms).sort((a, b) => a[1].localeCompare(b[1]))[0];
@@ -84,7 +111,9 @@
       src: 'mc', id: x.id, key: `mc:${x.id}`, title: x.title, description: x.description, url: x.url,
       status: null, date: x.published, themes: [...(x.themes || [])], schedule: x.schedule, prep: x.action,
       action: !!x.actionRequired || /action (may be |is )?required/i.test(x.title), tags: x.tags || [], major: !!x.major, live: x.live,
+      changes: x.dateChanges || [], moved: lastMove(x),
     };
+    if (it.moved) it.themes.push('changed');
     if (it.action && !it.themes.includes('action')) it.themes.push('action');
     const today = todayStr();
     const dates = x.dates || [];
@@ -108,6 +137,7 @@
 
   function rebuild() {
     S.all = [...S.roadmap.map(normRoadmap), ...S.mc.map(normMc)];
+    for (const i of S.all) { i.task = S.tasks.get(taskKey(i)) || null; i.taskStatus = taskStatus(i.task); }
   }
 
   const isNew = (it) => D(it.date).getTime() > baseline && !readSet.has(it.key);
@@ -123,8 +153,33 @@
     return r.json();
   }
 
+  async function loadTasks() {
+    let list = null;
+    try {
+      list = [];
+      for (let page = 1; page <= 3; page++) {
+        const r = await fetch(`https://api.github.com/repos/${REPO}/issues?state=all&per_page=100&page=${page}`, { headers: { Accept: 'application/vnd.github+json' } });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const batch = await r.json();
+        for (const i of batch) {
+          const m = !i.pull_request && (i.title || '').match(/^\s*\[(MC\d+|RM\d+)\]/i);
+          if (m) list.push({ item: m[1].toUpperCase(), number: i.number, url: i.html_url, state: i.state, assignees: (i.assignees || []).map((a) => a.login),
+            labels: (i.labels || []).map((l) => l.name), updated: i.updated_at, stateReason: i.state_reason });
+        }
+        if (batch.length < 100) break;
+      }
+    } catch { list = await loadJson('data/tasks.json').catch(() => []); }  // GitHub API rate limit or offline
+    // One task per item: prefer an open issue, then the most recently updated
+    const map = new Map();
+    for (const t of list.sort((a, b) => String(a.updated).localeCompare(String(b.updated)))) {
+      const cur = map.get(t.item);
+      if (!cur || t.state === 'open' || cur.state !== 'open') map.set(t.item, t);
+    }
+    S.tasks = map;
+  }
+
   async function loadData() {
-    const [rm, mc, meta] = await Promise.all([loadJson('data/roadmap.json'), loadJson('data/messagecenter.json'), loadJson('data/meta.json').catch(() => ({}))]);
+    const [rm, mc, meta] = await Promise.all([loadJson('data/roadmap.json'), loadJson('data/messagecenter.json'), loadJson('data/meta.json').catch(() => ({})), loadTasks()]);
     S.roadmap = rm; S.meta = meta;
     const live = S.mc.filter((m) => m.live && !mc.some((x) => x.id === m.id));
     S.mc = [...live, ...mc];
@@ -190,10 +245,13 @@
     const count = (k) => set.filter((i) => i.themes.includes(k)).length;
     const opts = [['', `All topics`]];
     if (S.view === 'upcoming') opts.push(['__soon', `Next 30 days (${set.filter(isSoon).length})`]);
+    if (S.view === 'urgent') opts.push(['__notask', `No task yet (${set.filter((i) => !i.task).length})`]);
+    opts.push(['__changed', `Date changed (${count('changed')})`]);
     THEMES.forEach(([k, l]) => { const n = count(k); if (n || S.theme === k) opts.push([k, `${l} (${n})`]); });
     $('fTopic').innerHTML = opts.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join('');
-    $('fTopic').value = S.soon ? '__soon' : S.theme;
-    if ($('fTopic').value !== (S.soon ? '__soon' : S.theme)) { S.soon = false; S.theme = ''; $('fTopic').value = ''; }
+    const want = S.soon ? '__soon' : S.theme === 'changed' ? '__changed' : S.theme;
+    $('fTopic').value = want;
+    if ($('fTopic').value !== want) { S.soon = false; S.theme = ''; $('fTopic').value = ''; }
   }
 
   function groupOf(i) {
@@ -215,11 +273,41 @@
     return [i.date.slice(0, 7), fmtMonth(i.date.slice(0, 7) + '-01')];
   }
 
+  // Prefilled GitHub issue for a readiness task
+  function newTaskUrl(i) {
+    const clip = (t, n) => (t || '').length > n ? t.slice(0, n) + '…' : (t || '');
+    const quote = (t) => clip(t, 1500).split('\n').map((l) => '> ' + l).join('\n');
+    const keyDate = i.next ? fmtDate(i.next) : i.when || 'Not announced';
+    const body = [
+      `**Item:** ${i.src === 'rm' ? 'Microsoft 365 Roadmap' : 'Message Center'} ${i.id} — ${i.url}`,
+      i.src === 'mc' ? `**Admin center:** https://admin.microsoft.com/#/MessageCenter/:/messages/${i.id}` : '',
+      `**Key date:** ${keyDate}`,
+      i.previewLabel || i.gaLabel ? `**Preview / GA:** ${(i.previewLabel || '—').replace(' CY', ' ')} / ${(i.gaLabel || '—').replace(' CY', ' ')}` : '',
+      '',
+      i.description ? `### Summary\n${quote(i.description)}` : '',
+      i.schedule ? `### Rollout\n${quote(i.schedule)}` : '',
+      i.prep ? `### How to prepare\n${quote(i.prep)}` : '',
+      '',
+      '### Readiness checklist',
+      '- [ ] Review impact for our tenant',
+      '- [ ] Decide settings, policies and licensing',
+      '- [ ] Pilot with a test group',
+      '- [ ] Communicate to users and help desk',
+      '- [ ] Update training and documentation',
+      '',
+      '_Assign yourself when you pick this up. Close it when done, or close as "not planned" if it does not apply._',
+    ].filter((l) => l !== null).join('\n').replace(/\n{3,}/g, '\n\n');
+    const title = `[${taskKey(i)}] ${cleanTitle(i.title)}`;
+    return `https://github.com/${REPO}/issues/new?title=${encodeURIComponent(clip(title, 200))}&body=${encodeURIComponent(clip(body, 6000))}`;
+  }
+
   function itemHtml(i) {
     // Second line only when it matters: why it is urgent, or that admins must act
-    const sub = S.view === 'urgent'
-      ? [i.action ? '<span class="act">Action needed</span>' : '', i.themes.includes('retirement') ? 'Retirement' : '', i.major ? 'Major change' : ''].filter(Boolean).join('<i>·</i>')
-      : i.action ? '<span class="act">Action needed</span>' : '';
+    const reasons = S.view === 'urgent'
+      ? [i.action ? '<span class="act">Action needed</span>' : '', i.themes.includes('retirement') ? 'Retirement' : '', i.major ? 'Major change' : '']
+      : [i.action ? '<span class="act">Action needed</span>' : ''];
+    const taskTxt = i.task ? `<span class="task task-${i.taskStatus.replace(/\W/g, '').toLowerCase()}">${esc(i.taskStatus)}${i.taskStatus === 'In progress' && i.task.assignees[0] ? ' · @' + esc(i.task.assignees[0]) : ''}</span>` : '';
+    const sub = [...reasons, i.moved ? `<span class="moved ${i.moved.direction}">${esc(moveText(i.moved))}</span>` : '', taskTxt].filter(Boolean).join('<i>·</i>');
     let when;
     if (S.view === 'upcoming') when = `<span class="when">${esc(i.when)}</span>`;
     else if (S.view === 'urgent') {
@@ -234,6 +322,9 @@
       i.gaLabel ? `<span>GA ${esc(i.gaLabel.replace(' CY', ' '))}</span>` : '',
       `<span>${i.src === 'rm' ? 'Updated' : 'Published'} ${fmtDate(i.date)}</span>`,
       `<span><a href="${esc(i.url)}" target="_blank" rel="noopener">Open ↗</a></span>`,
+      i.task
+        ? `<span><a href="${esc(i.task.url)}" target="_blank" rel="noopener">Task #${i.task.number} · ${esc(i.taskStatus)} ↗</a></span>`
+        : `<span><a href="${esc(newTaskUrl(i))}" target="_blank" rel="noopener">Create task ↗</a></span>`,
       i.src === 'mc' ? `<span><a href="https://admin.microsoft.com/#/MessageCenter/:/messages/${esc(i.id)}" target="_blank" rel="noopener">Admin center ↗</a></span>` : '',
     ].join('');
     return `<div class="item" data-key="${esc(i.key)}">
@@ -244,6 +335,7 @@
         ${i.description ? `<p>${esc(i.description)}</p>` : ''}
         ${i.schedule ? `<h4>Rollout</h4><p>${esc(i.schedule)}</p>` : ''}
         ${i.prep ? `<h4>How to prepare</h4><p>${esc(i.prep)}</p>` : ''}
+        ${i.changes.length ? `<h4>Date changes</h4><p>${i.changes.slice().reverse().map((c) => `${fmtDate(c.at)}: ${esc(FIELD_LABEL[c.field] || c.field)} ${fmtField(c, c.from)} → ${fmtField(c, c.to)}`).join('\n')}</p>` : ''}
         <div class="meta">${meta}</div>
       </div>
     </div>`;
@@ -252,7 +344,8 @@
   function renderList(set) {
     let list = set;
     if (S.soon) list = list.filter(isSoon);
-    if (S.theme) list = list.filter((i) => i.themes.includes(S.theme));
+    if (S.theme === '__notask') list = list.filter((i) => !i.task);
+    else if (S.theme) list = list.filter((i) => i.themes.includes(S.theme));
     // Future months first (soonest at the top), then what is already rolling out, then undated
     const order = (i) => i.bucket === 'now' ? '8' : i.bucket === 'tbd' ? '9' : '1' + i.sortDate;
     if (S.view === 'upcoming') list.sort((a, b) => order(a).localeCompare(order(b)) || String(b.date).localeCompare(String(a.date)));
@@ -302,12 +395,8 @@
   }
 
   function setupWorkflowLink() {
-    const h = location.hostname;
-    if (!h.endsWith('.github.io')) return;
-    const owner = h.replace('.github.io', '');
-    const seg = location.pathname.split('/').filter(Boolean)[0];
-    const repo = seg && !seg.includes('.') ? seg : h;
-    $('wfLink').innerHTML = ` · <a href="https://github.com/${esc(owner)}/${esc(repo)}/actions/workflows/update-data.yml" target="_blank" rel="noopener">run now</a>`;
+    $('wfLink').innerHTML = ` · <a href="https://github.com/${esc(REPO)}/actions/workflows/update-data.yml" target="_blank" rel="noopener">run now</a>` +
+      ` · <a href="https://github.com/${esc(REPO)}/issues" target="_blank" rel="noopener">readiness tasks</a>`;
   }
 
   // ---------- theme (light/dark) ----------
@@ -323,7 +412,7 @@
   $('q').addEventListener('input', () => { S.shown = PAGE; renderAll(); });
   $('fTopic').addEventListener('change', () => {
     const v = $('fTopic').value;
-    S.soon = v === '__soon'; S.theme = S.soon ? '' : v;
+    S.soon = v === '__soon'; S.theme = S.soon ? '' : v === '__changed' ? 'changed' : v;
     S.shown = PAGE; renderAll();
   });
   $('btnMore').onclick = () => { S.shown += PAGE; renderAll(); };

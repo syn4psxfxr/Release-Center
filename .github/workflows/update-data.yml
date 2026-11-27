@@ -4,12 +4,15 @@ on:
   schedule:
     - cron: '0 */6 * * *'   # every 6 hours (UTC)
   workflow_dispatch: {}      # "Run workflow" button for an on-demand refresh
+  issues:                    # keep readiness tasks in sync
+    types: [opened, edited, closed, reopened, assigned, unassigned, labeled, unlabeled]
   push:
     branches: [main]
     paths: ['scripts/**', '.github/workflows/update-data.yml']
 
 permissions:
   contents: write
+  issues: read
 
 concurrency:
   group: update-data
@@ -27,6 +30,8 @@ jobs:
 
       - name: Fetch Roadmap + Message Center
         run: node scripts/fetch-data.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit changes
         run: |

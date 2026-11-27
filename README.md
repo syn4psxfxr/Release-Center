@@ -23,6 +23,17 @@ Live site: https://syn4psxfxr.github.io/Release-Center/
 - `.github/workflows/update-data.yml` runs the script **every 6 hours** and on demand (Actions → *Update Copilot data* → *Run workflow*), then commits the new data. GitHub Pages republishes automatically.
 - New-item dots are per browser (localStorage): they mark updates that arrived after your first visit.
 
+## Date changes
+
+Every run compares each item's dates with the previous run: Preview and GA months for Roadmap items, and the rollout start and completion dates for Message Center posts. Dates are only compared when Microsoft actually updated the item. A change is stored in `dateChanges` and shown on the page for 60 days as **Delayed** or **Moved earlier** (with the previous date), and under the **Date changed** topic. History starts from the first run, so the list fills up over time.
+
+## Readiness tasks (GitHub issues)
+
+- Open any item and click **Create task**: it opens a new issue in this repository, prefilled with the links, key date, rollout schedule, how to prepare and a readiness checklist. The title starts with the item ID, for example `[MC1546438]` or `[RM498765]`, which is how the page links them.
+- The page shows each item's task status: **To do** (open, no assignee), **In progress** (open, with the assignee), **Done** (closed), **N/A** (closed as "not planned" or labelled `not applicable`). On the Urgent tab, the **No task yet** topic lists what still has no owner.
+- The page reads issues live from the GitHub API (60 requests per hour per visitor without sign-in). The Action also saves them to `data/tasks.json` as a fallback, and runs again when an issue changes.
+- This repository is public, so its issues are public too. Keep internal details out of them, or make the repository private (Pages for private repositories needs a paid GitHub plan).
+
 ## Setup
 
 1. Push this repository to GitHub (branch `main`).

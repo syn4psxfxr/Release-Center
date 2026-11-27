@@ -107,3 +107,11 @@ h1 { margin: 0; font-size: 30px; font-weight: 600; letter-spacing: -.025em; line
   .row { flex-direction: column; gap: 2px; }
   .when { text-align: left; }
 }
+
+/* date changes and readiness tasks */
+.moved.later { color: var(--amber); }
+.moved.earlier { color: var(--green); }
+.task { color: var(--accent); }
+.task-todo { color: var(--muted); }
+.task-done { color: var(--green); }
+.task-na { color: var(--faint); }

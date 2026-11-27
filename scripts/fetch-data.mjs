@@ -21,6 +21,8 @@ const UA = { 'User-Agent': 'copilot-release-center (GitHub Actions)', Accept: '*
 // Message Center posts older than this are kept but not re-scanned for a rollout schedule
 const DETAIL_WINDOW_DAYS = 240;
 const DETAIL_CONCURRENCY = 4;
+// Bump when the detail-page parser changes, so cached pages are read again
+const PARSER_VERSION = 2;
 
 // ---------- what counts as "Microsoft 365 Copilot" ----------
 const COPILOT_PRODUCTS = ['Microsoft Copilot (Microsoft 365)', 'Microsoft 365 Copilot Chat', 'Microsoft 365 Copilot'];
@@ -121,9 +123,10 @@ function section(text, startRe, endRe) {
 async function messageDetail(id) {
   const text = htmlToText(await (await get(MC_PAGE(id))).text());
   const body = text.slice(Math.max(0, text.indexOf('More information')));
-  const schedule = section(body, /Rollout schedule|Rollout timeline|When this will happen|Timeline/i,
+  // Section headings must start a line, so words like "timeline" inside a sentence are not mistaken for one
+  const schedule = section(body, /(^|\n)[ \t]*(Rollout schedule|Rollout timeline|When this will happen|Timeline)/i,
     /\n(Impact on your organization|How this will affect|Who is affected|What will happen|What you need to do|Action required|What you can do|Compliance considerations|Discussion)/i);
-  const action = section(body, /Action required( and recommendations| \/ Recommendations)?|What you need to do to prepare|What you can do to prepare/i,
+  const action = section(body, /(^|\n)[ \t]*(Action required( and recommendations| \/ Recommendations)?|What you need to do to prepare|What you can do to prepare)/i,
     /\n(Compliance considerations|Learn more|Additional information|Discussion)/i);
   return { schedule, action };
 }
@@ -152,7 +155,8 @@ async function fetchMessageCenter(previous) {
   // Detail pages: only recent messages, and only when new or modified since last run
   const todo = msgs.filter((m) => {
     const p = prevById.get(m.id);
-    if (p && p.detailFor === m.modified) { Object.assign(m, { schedule: p.schedule, action: p.action, detailFor: p.detailFor }); return false; }
+    const ver = `${m.modified}|v${PARSER_VERSION}`;
+    if (p && p.detailFor === ver) { Object.assign(m, { schedule: p.schedule, action: p.action, detailFor: p.detailFor }); return false; }
     if (p) Object.assign(m, { schedule: p.schedule, action: p.action });
     return m.published >= since;
   });
@@ -160,7 +164,7 @@ async function fetchMessageCenter(previous) {
   const queue = [...todo];
   await Promise.all(Array.from({ length: DETAIL_CONCURRENCY }, async () => {
     for (let m; (m = queue.shift());) {
-      try { Object.assign(m, await messageDetail(m.id), { detailFor: m.modified }); done++; }
+      try { Object.assign(m, await messageDetail(m.id), { detailFor: `${m.modified}|v${PARSER_VERSION}` }); done++; }
       catch { failed++; }
       await new Promise((r) => setTimeout(r, 150));
     }
@@ -178,23 +182,67 @@ async function fetchMessageCenter(previous) {
 }
 
 // ---------- merge with history ----------
-function merge(oldItems, newItems, changedKey) {
+// ---------- date change tracking ----------
+// Which dates to watch per source. Roadmap: Preview and GA months. Message Center: when the rollout starts and completes.
+const WATCH = {
+  roadmap: (i) => ({ preview: i.preview, ga: i.ga }),
+  messageCenter: (i) => (i.dates?.length ? { start: i.dates[0], end: i.dates[i.dates.length - 1] } : {}),
+};
+
+function dateChanges(source, prev, it, at) {
+  const a = WATCH[source](prev), b = WATCH[source](it);
+  return Object.keys(b)
+    .filter((k) => a[k] && b[k] && a[k] !== b[k])
+    .map((field) => ({ field, from: a[field], to: b[field], at, direction: b[field] > a[field] ? 'later' : 'earlier' }));
+}
+
+// ---------- merge with history ----------
+function merge(source, oldItems, newItems, changedKey) {
   const now = new Date().toISOString();
   const map = new Map(oldItems.map((i) => [i.id, i]));
-  let added = 0, changed = 0;
+  let added = 0, changed = 0, moved = 0;
   for (const it of newItems) {
     const prev = map.get(it.id);
     if (!prev) { added++; map.set(it.id, { ...it, firstSeen: now, lastChanged: now }); continue; }
     const isChanged = prev[changedKey] !== it[changedKey];
     if (isChanged) changed++;
+    // Only compare dates when Microsoft actually updated the item (avoids noise from parser changes)
+    const newMoves = isChanged ? dateChanges(source, prev, it, now) : [];
+    moved += newMoves.length ? 1 : 0;
     map.set(it.id, {
       ...it,
       firstSeen: prev.firstSeen || now,
       lastChanged: isChanged ? now : prev.lastChanged,
       previousStatus: isChanged && prev.status && prev.status !== it.status ? prev.status : prev.previousStatus,
+      dateChanges: [...(prev.dateChanges || []), ...newMoves].slice(-8),
     });
   }
-  return { items: [...map.values()], added, changed };
+  return { items: [...map.values()], added, changed, moved };
+}
+
+// ---------- readiness tasks (GitHub issues in this repository) ----------
+// Issues titled "[MC1234567] ..." or "[RM498765] ..." are linked to that item.
+async function fetchTasks() {
+  const repo = process.env.GITHUB_REPOSITORY, token = process.env.GITHUB_TOKEN;
+  if (!repo) return null;  // running locally: the page reads issues live instead
+  const tasks = [];
+  for (let page = 1; page <= 10; page++) {
+    const res = await fetch(`https://api.github.com/repos/${repo}/issues?state=all&per_page=100&page=${page}`, {
+      headers: { Accept: 'application/vnd.github+json', 'User-Agent': UA['User-Agent'], ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+    });
+    if (!res.ok) throw new Error(`GitHub issues -> HTTP ${res.status}`);
+    const batch = await res.json();
+    for (const i of batch) {
+      const m = !i.pull_request && (i.title || '').match(/^\s*\[(MC\d+|RM\d+)\]/i);
+      if (m) tasks.push({
+        item: m[1].toUpperCase(), number: i.number, url: i.html_url, state: i.state, title: i.title,
+        assignees: (i.assignees || []).map((a) => a.login), labels: (i.labels || []).map((l) => l.name),
+        updated: i.updated_at, closed: i.closed_at, stateReason: i.state_reason,
+      });
+    }
+    if (batch.length < 100) break;
+  }
+  return tasks;
 }
 
 async function main() {
@@ -211,19 +259,30 @@ async function main() {
       const fresh = await fn(old);
       // History is kept, but items that no longer match the Copilot filter are dropped
       const keep = (i) => isCopilot(i.title, i.products || i.services || []);
-      const { items: merged, added, changed } = merge(old.filter(keep), fresh, 'modified');
+      const { items: merged, added, changed, moved } = merge(key, old.filter(keep), fresh, 'modified');
       const items = merged.filter(keep);
       items.sort((a, b) => String(b[sortKey]).localeCompare(String(a[sortKey])));
       await writeFile(join(DATA, file), JSON.stringify(items, null, 1));
-      result.sources[key] = { ok: true, total: items.length, fetched: fresh.length, added, changed, updated: result.lastRun };
-      console.log(`${key}: ${fresh.length} Copilot items (${added} new, ${changed} changed, ${items.length} in history)`);
+      result.sources[key] = { ok: true, total: items.length, fetched: fresh.length, added, changed, moved, updated: result.lastRun };
+      console.log(`${key}: ${fresh.length} Copilot items (${added} new, ${changed} changed, ${moved} with new dates, ${items.length} in history)`);
     } catch (e) {
       console.error(`${key}: failed ->`, e.message);
       result.sources[key] = { ...(meta.sources?.[key] || {}), ok: false, error: e.message };
     }
   }
+  try {
+    const tasks = await fetchTasks();
+    if (tasks) {
+      await writeFile(join(DATA, 'tasks.json'), JSON.stringify(tasks, null, 1));
+      result.sources.tasks = { ok: true, total: tasks.length, updated: result.lastRun };
+      console.log(`tasks: ${tasks.length} readiness issues`);
+    }
+  } catch (e) {
+    console.error('tasks: failed ->', e.message);
+    result.sources.tasks = { ...(meta.sources?.tasks || {}), ok: false, error: e.message };
+  }
   await writeFile(join(DATA, 'meta.json'), JSON.stringify(result, null, 1));
-  if (!Object.values(result.sources).some((s) => s.ok)) process.exit(1);
+  if (!result.sources.roadmap?.ok && !result.sources.messageCenter?.ok) process.exit(1);
 }
 
 main();
