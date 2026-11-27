@@ -8,7 +8,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%235b5fc7'/><path d='M9 21l5-10 4 7 2-3 3 6' stroke='white' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=5">
+  <link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body>
   <main class="wrap">
@@ -39,16 +39,10 @@
         <button role="tab" data-view="urgent">Urgent <span class="badge" id="urgentCount"></span></button>
       </div>
       <div class="tools">
+        <select id="fTopic" aria-label="Topic"></select>
         <input id="q" type="search" placeholder="Search" aria-label="Search">
-        <select id="fSource" aria-label="Source">
-          <option value="">All sources</option>
-          <option value="rm">Roadmap</option>
-          <option value="mc">Message Center</option>
-        </select>
       </div>
     </div>
-
-    <nav class="chips" id="chips" aria-label="Themes"></nav>
 
     <section id="list" class="list"></section>
     <div class="more-wrap"><button id="btnMore" class="text-btn" type="button" hidden>Show more</button></div>
@@ -62,6 +56,6 @@
     </footer>
   </main>
 
-  <script src="app.js?v=5"></script>
+  <script src="app.js?v=6"></script>
 </body>
 </html>

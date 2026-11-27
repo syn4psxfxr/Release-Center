@@ -24,7 +24,6 @@
     ['admin', 'Admin & governance'],
     ['retirement', 'Retirements'],
   ];
-  const THEME_LABEL = Object.fromEntries(THEMES);
   const THEME_RE = {
     frontier: /\bfrontier\b/i, cowork: /\bcowork\b/i,
     agents: /\bagents?\b|autopilot|researcher|analyst agent|facilitator/i,
@@ -170,31 +169,31 @@
     const stats = [
       { v: up.filter(isSoon).length, l: 'Landing in the next 30 days', view: 'upcoming', on: S.view === 'upcoming' && S.soon && !S.theme, go: () => { S.soon = true; S.theme = ''; } },
       { v: urgent, l: 'Urgent for admins', alert: true, view: 'urgent', on: S.view === 'urgent' && !S.theme, go: () => { S.soon = false; S.theme = ''; } },
-      { v: adminFeed().filter((i) => Date.now() - D(i.date) <= 30 * DAY).length, l: 'Admin Center posts, last 30 days', view: 'admin', on: S.view === 'admin' && !S.theme, go: () => { S.soon = false; S.theme = ''; } },
       { v: up.filter((i) => i.themes.includes('frontier')).length, l: 'Frontier releases ahead', view: 'upcoming', on: S.view === 'upcoming' && S.theme === 'frontier', go: () => { S.soon = false; S.theme = 'frontier'; } },
     ];
     $('summary').innerHTML = stats.map((s, i) =>
       `<button class="stat${s.alert && s.v ? ' alert' : ''}${s.on ? ' on' : ''}" type="button" data-stat="${i}"><span class="v">${s.v}</span><span class="l">${s.l}</span></button>`).join('');
     $('summary').querySelectorAll('[data-stat]').forEach((b) => b.onclick = () => {
       const s = stats[b.dataset.stat]; s.go(); setView(s.view); S.shown = PAGE; renderAll();
-      $('chips').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      $('list').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }
 
   function baseSet() {
-    const q = $('q').value.trim().toLowerCase(), src = $('fSource').value;
+    const q = $('q').value.trim().toLowerCase();
     const set = S.view === 'upcoming' ? upcoming() : S.view === 'urgent' ? urgentSet() : adminFeed();
-    return set.filter((i) =>
-      (!src || S.view !== 'upcoming' || i.src === src) &&
-      (!q || `${i.id} ${i.title} ${i.description} ${i.schedule || ''}`.toLowerCase().includes(q)));
+    return set.filter((i) => !q || `${i.id} ${i.title} ${i.description} ${i.schedule || ''}`.toLowerCase().includes(q));
   }
 
-  function renderChips(set) {
+  // One quiet dropdown instead of a row of theme chips
+  function renderTopics(set) {
     const count = (k) => set.filter((i) => i.themes.includes(k)).length;
-    $('chips').innerHTML = [`<button class="chip${!S.theme && !S.soon ? ' on' : ''}" data-theme="">All<span class="n">${set.length}</span></button>`]
-      .concat(S.soon ? [`<button class="chip on" data-theme="__soon">Next 30 days<span class="n">${set.filter(isSoon).length}</span></button>`] : [])
-      .concat(THEMES.map(([k, l]) => `<button class="chip${S.theme === k ? ' on' : ''}" data-theme="${k}">${l}<span class="n">${count(k)}</span></button>`))
-      .join('');
+    const opts = [['', `All topics`]];
+    if (S.view === 'upcoming') opts.push(['__soon', `Next 30 days (${set.filter(isSoon).length})`]);
+    THEMES.forEach(([k, l]) => { const n = count(k); if (n || S.theme === k) opts.push([k, `${l} (${n})`]); });
+    $('fTopic').innerHTML = opts.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join('');
+    $('fTopic').value = S.soon ? '__soon' : S.theme;
+    if ($('fTopic').value !== (S.soon ? '__soon' : S.theme)) { S.soon = false; S.theme = ''; $('fTopic').value = ''; }
   }
 
   function groupOf(i) {
@@ -217,18 +216,10 @@
   }
 
   function itemHtml(i) {
-    const themes = i.themes.filter((t) => t !== 'action' && t !== 'admin').map((t) => THEME_LABEL[t]);
-    if (i.themes.includes('admin') && !themes.length) themes.push('Admin');
-    const act = i.action ? '<i>·</i><span class="act">Action needed</span>' : '';
-    let sub;
-    if (S.view === 'urgent') {
-      sub = [i.action ? '<span class="act">Action needed</span>' : '', i.themes.includes('retirement') ? 'Retirement' : '', i.major ? 'Major change' : '']
-        .filter(Boolean).join('<i>·</i>');
-    } else if (S.view === 'admin') {
-      sub = [...(i.tags || []).filter((t) => /impact|retirement|new feature|feature update/i.test(t)), ...themes.slice(0, 1)].slice(0, 3).join('<i>·</i>') + act;
-    } else {
-      sub = [i.src === 'rm' ? 'Roadmap' : 'Message Center', ...themes.slice(0, 2)].join('<i>·</i>') + act;
-    }
+    // Second line only when it matters: why it is urgent, or that admins must act
+    const sub = S.view === 'urgent'
+      ? [i.action ? '<span class="act">Action needed</span>' : '', i.themes.includes('retirement') ? 'Retirement' : '', i.major ? 'Major change' : ''].filter(Boolean).join('<i>·</i>')
+      : i.action ? '<span class="act">Action needed</span>' : '';
     let when;
     if (S.view === 'upcoming') when = `<span class="when">${esc(i.when)}</span>`;
     else if (S.view === 'urgent') {
@@ -247,7 +238,7 @@
     ].join('');
     return `<div class="item" data-key="${esc(i.key)}">
       <button class="row" type="button" aria-expanded="false">
-        <span><span class="t">${isNew(i) ? '<span class="dot" title="New since your last visit"></span>' : ''}${esc(cleanTitle(i.title))}</span><span class="sub">${sub}</span></span>${when}
+        <span><span class="t">${isNew(i) ? '<span class="dot" title="New since your last visit"></span>' : ''}${esc(cleanTitle(i.title))}</span>${sub ? `<span class="sub">${sub}</span>` : ''}</span>${when}
       </button>
       <div class="detail" hidden>
         ${i.description ? `<p>${esc(i.description)}</p>` : ''}
@@ -291,13 +282,12 @@
   function renderAll() {
     renderHeader(); renderSummary();
     const set = baseSet();
-    renderChips(set); renderList(set);
+    renderTopics(set); renderList(set);
   }
 
   function setView(v) {
     S.view = v;
     document.querySelectorAll('.seg button').forEach((b) => b.classList.toggle('active', b.dataset.view === v));
-    $('fSource').hidden = v !== 'upcoming';
   }
 
   async function check() {
@@ -331,18 +321,15 @@
   // ---------- events ----------
   document.querySelectorAll('.seg button').forEach((b) => b.onclick = () => { setView(b.dataset.view); S.soon = false; S.shown = PAGE; renderAll(); });
   $('q').addEventListener('input', () => { S.shown = PAGE; renderAll(); });
-  $('fSource').addEventListener('change', () => { S.shown = PAGE; renderAll(); });
-  $('chips').addEventListener('click', (e) => {
-    const c = e.target.closest('[data-theme]'); if (!c) return;
-    const k = c.dataset.theme;
-    if (k === '__soon') S.soon = false;
-    else { S.theme = S.theme === k ? '' : k; if (!k) S.soon = false; }
+  $('fTopic').addEventListener('change', () => {
+    const v = $('fTopic').value;
+    S.soon = v === '__soon'; S.theme = S.soon ? '' : v;
     S.shown = PAGE; renderAll();
   });
   $('btnMore').onclick = () => { S.shown += PAGE; renderAll(); };
   $('btnCheck').onclick = check;
   $('list').addEventListener('click', (e) => {
-    if (e.target.closest('[data-clear]')) { $('q').value = ''; $('fSource').value = ''; S.theme = ''; S.soon = false; renderAll(); return; }
+    if (e.target.closest('[data-clear]')) { $('q').value = ''; S.theme = ''; S.soon = false; renderAll(); return; }
     const row = e.target.closest('.row'); if (!row) return;
     const it = row.parentElement, d = it.querySelector('.detail');
     d.hidden = !d.hidden; row.setAttribute('aria-expanded', String(!d.hidden));
