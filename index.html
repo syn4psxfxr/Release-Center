@@ -8,35 +8,43 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%235b5fc7'/><path d='M9 21l5-10 4 7 2-3 3 6' stroke='white' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body>
-  <header class="wrap top">
-    <div>
-      <h1>Copilot Release Center</h1>
-      <p class="muted">Microsoft 365 Copilot · Roadmap and Message Center</p>
-    </div>
-    <div class="actions">
-      <span id="lastUpdate" class="muted small"></span>
-      <button id="btnCheck" class="btn" type="button">
-        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Check for updates
-      </button>
-      <button id="btnTheme" class="btn icon" type="button" aria-label="Toggle theme" title="Toggle theme">◐</button>
-    </div>
-  </header>
-
   <main class="wrap">
+    <header class="top">
+      <div>
+        <p class="eyebrow">Microsoft 365 Copilot</p>
+        <h1>Release Center</h1>
+      </div>
+      <div class="actions">
+        <span id="lastUpdate" class="muted small"></span>
+        <button id="btnCheck" class="icon-btn" type="button" aria-label="Check for updates" title="Check for updates">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button id="btnTheme" class="icon-btn" type="button" aria-label="Toggle theme" title="Toggle theme">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <section class="summary" id="summary" aria-label="Last 30 days"></section>
+
     <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
-    <nav class="tabs" role="tablist">
-      <button role="tab" data-tab="all" class="tab active">All</button>
-      <button role="tab" data-tab="roadmap" class="tab">Roadmap <span class="count" id="cRoadmap"></span></button>
-      <button role="tab" data-tab="mc" class="tab">Message Center <span class="count" id="cMc"></span></button>
-    </nav>
+    <div class="controls">
+      <div class="seg" role="tablist">
+        <button role="tab" data-tab="all" class="active">All</button>
+        <button role="tab" data-tab="roadmap">Roadmap</button>
+        <button role="tab" data-tab="mc">Message Center</button>
+      </div>
+      <div class="tools">
+        <input id="q" type="search" placeholder="Search" aria-label="Search">
+        <button id="btnFilters" class="text-btn" type="button" aria-expanded="false">Filters<span id="filterCount"></span></button>
+      </div>
+    </div>
 
-    <section class="filters">
-      <input id="q" type="search" placeholder="Search title, description or ID" aria-label="Search">
+    <section class="filters" id="filters" hidden>
       <select id="fStatus" aria-label="Status"></select>
       <select id="fProduct" aria-label="Product"></select>
       <select id="fPeriod" aria-label="Period">
@@ -46,27 +54,20 @@
         <option value="90">Last 90 days</option>
         <option value="365">Last year</option>
       </select>
+      <button id="btnReset" class="text-btn" type="button">Reset</button>
     </section>
 
-    <div class="bar">
-      <span id="resultInfo" class="muted small"></span>
-      <span class="bar-actions">
-        <label class="check small"><input id="fUnread" type="checkbox"> <span id="unreadLabel">New only</span></label>
-        <button id="btnMarkAll" class="link small" type="button">Mark all as read</button>
-      </span>
-    </div>
-
     <section id="list" class="list"></section>
-    <div class="more-wrap"><button id="btnMore" class="btn" type="button" hidden>Show more</button></div>
+    <div class="more-wrap"><button id="btnMore" class="text-btn" type="button" hidden>Show more</button></div>
+
+    <footer class="foot muted small">
+      Sources: <a href="https://www.microsoft.com/microsoft-365/roadmap?filters=Microsoft%20Copilot%20(Microsoft%20365)" target="_blank" rel="noopener">Microsoft 365 Roadmap</a>
+      and <a href="https://mc.merill.net/" target="_blank" rel="noopener">Message Center Archive</a>.
+      Message Center posts vary by tenant; confirm in your <a href="https://admin.microsoft.com/#/MessageCenter" target="_blank" rel="noopener">admin center</a>.
+      Refreshed every 6 hours<span id="wfLink"></span>.
+    </footer>
   </main>
 
-  <footer class="wrap foot muted small">
-    Sources: <a href="https://www.microsoft.com/microsoft-365/roadmap?filters=Microsoft%20Copilot%20(Microsoft%20365)" target="_blank" rel="noopener">Microsoft 365 Roadmap</a>
-    and <a href="https://mc.merill.net/" target="_blank" rel="noopener">Message Center Archive</a>.
-    Message Center posts vary by tenant; confirm in your <a href="https://admin.microsoft.com/#/MessageCenter" target="_blank" rel="noopener">admin center</a>.
-    Data refreshes every 6 hours<span id="wfLink"></span>.
-  </footer>
-
-  <script src="app.js?v=2"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>
