@@ -11,10 +11,11 @@ Live site: https://syn4psxfxr.github.io/Release-Center/
 
 ## What the page shows
 
-- **At a glance:** releases landing in the next 30 days, items that need admin preparation, Frontier releases ahead, and retirements.
+- **At a glance:** releases landing in the next 30 days, urgent items for admins, Admin Center posts in the last 30 days, and Frontier releases ahead.
 - **Upcoming:** a timeline by month (soonest first), then what is already rolling out, then items with no date yet. Each item opens to show the description, the rollout schedule and how to prepare.
 - **Themes:** Action needed, Frontier, Cowork, Agents, AI models, Admin & governance, Retirements (keyword and tag based).
-- **Latest announcements:** everything published in the last 60 days, newest first.
+- **Admin Center:** Message Center posts from the last 90 days, newest first, with their impact tags.
+- **Urgent:** posts that need admin action, retirements and changes Microsoft flags as major that are still ahead, ordered by their next key date (next 7 days, next 30 days, later).
 
 ## How it works
 

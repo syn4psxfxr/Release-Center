@@ -10,7 +10,8 @@
   const NON_M365 = /power platform|power automate|power apps|power pages|copilot studio|dynamics|github copilot|security copilot|power bi|dataverse|fabric/i;
   const PAGE = 40;
   const DAY = 864e5;
-  const LATEST_DAYS = 60;      // "Latest announcements" window
+  const ADMIN_DAYS = 90;       // "Admin Center" tab window
+  const URGENT_RECENT_DAYS = 30; // undated urgent posts stay listed this long
   const NO_DATE_DAYS = 45;     // undated Message Center posts stay in "Upcoming" this long
   const STATUS_CLS = { 'Launched': 'st-launched', 'Rolling out': 'st-rolling', 'In development': 'st-dev', 'Cancelled': 'st-cancel' };
 
@@ -83,12 +84,17 @@
     const it = {
       src: 'mc', id: x.id, key: `mc:${x.id}`, title: x.title, description: x.description, url: x.url,
       status: null, date: x.published, themes: [...(x.themes || [])], schedule: x.schedule, prep: x.action,
-      action: !!x.actionRequired, tags: x.tags || [], live: x.live,
+      action: !!x.actionRequired || /action (may be |is )?required/i.test(x.title), tags: x.tags || [], major: !!x.major, live: x.live,
     };
-    if (it.action) it.themes.push('action');
+    if (it.action && !it.themes.includes('action')) it.themes.push('action');
     const today = todayStr();
     const dates = x.dates || [];
     const future = dates.filter((d) => d >= today);
+    it.next = future[0] || null;
+    // Urgent = needs admin action, is a retirement, or is flagged as a major change by Microsoft,
+    // and is still ahead of us (a future date, or a recent post with no date yet)
+    it.urgent = (it.action || it.themes.includes('retirement') || it.major) &&
+      (future.length > 0 || (!dates.length && Date.now() - D(x.published) < URGENT_RECENT_DAYS * DAY));
     if (future.length && dates[0] >= today) {
       it.bucket = dates[0].slice(0, 7); it.sortDate = dates[0];
       it.when = `${it.themes.includes('retirement') ? 'Changes' : 'Starts'} ${fmtDay(dates[0])}`;
@@ -108,7 +114,8 @@
   const isNew = (it) => D(it.date).getTime() > baseline && !readSet.has(it.key);
   const isSoon = (it) => it.bucket && it.bucket !== 'tbd' && it.bucket !== 'now' && D(it.sortDate) - Date.now() <= 30 * DAY;
   const upcoming = () => S.all.filter((i) => i.bucket);
-  const latest = () => S.all.filter((i) => Date.now() - D(i.date) <= LATEST_DAYS * DAY);
+  const adminFeed = () => S.all.filter((i) => i.src === 'mc' && Date.now() - D(i.date) <= ADMIN_DAYS * DAY);
+  const urgentSet = () => S.all.filter((i) => i.urgent);
 
   // ---------- data ----------
   async function loadJson(path) {
@@ -158,24 +165,27 @@
 
   function renderSummary() {
     const up = upcoming();
+    const urgent = urgentSet().length;
+    $('urgentCount').textContent = urgent || '';
     const stats = [
-      { v: up.filter(isSoon).length, l: 'Landing in the next 30 days', on: S.soon && !S.theme, go: () => { S.soon = true; S.theme = ''; } },
-      { v: up.filter((i) => i.action).length, l: 'Need admin preparation', alert: true, on: S.theme === 'action', go: () => { S.soon = false; S.theme = 'action'; } },
-      { v: up.filter((i) => i.themes.includes('frontier')).length, l: 'Frontier releases ahead', on: S.theme === 'frontier', go: () => { S.soon = false; S.theme = 'frontier'; } },
-      { v: up.filter((i) => i.themes.includes('retirement')).length, l: 'Retirements and changes', on: S.theme === 'retirement', go: () => { S.soon = false; S.theme = 'retirement'; } },
+      { v: up.filter(isSoon).length, l: 'Landing in the next 30 days', view: 'upcoming', on: S.view === 'upcoming' && S.soon && !S.theme, go: () => { S.soon = true; S.theme = ''; } },
+      { v: urgent, l: 'Urgent for admins', alert: true, view: 'urgent', on: S.view === 'urgent' && !S.theme, go: () => { S.soon = false; S.theme = ''; } },
+      { v: adminFeed().filter((i) => Date.now() - D(i.date) <= 30 * DAY).length, l: 'Admin Center posts, last 30 days', view: 'admin', on: S.view === 'admin' && !S.theme, go: () => { S.soon = false; S.theme = ''; } },
+      { v: up.filter((i) => i.themes.includes('frontier')).length, l: 'Frontier releases ahead', view: 'upcoming', on: S.view === 'upcoming' && S.theme === 'frontier', go: () => { S.soon = false; S.theme = 'frontier'; } },
     ];
     $('summary').innerHTML = stats.map((s, i) =>
-      `<button class="stat${s.alert && s.v ? ' alert' : ''}${s.on && S.view === 'upcoming' ? ' on' : ''}" type="button" data-stat="${i}"><span class="v">${s.v}</span><span class="l">${s.l}</span></button>`).join('');
+      `<button class="stat${s.alert && s.v ? ' alert' : ''}${s.on ? ' on' : ''}" type="button" data-stat="${i}"><span class="v">${s.v}</span><span class="l">${s.l}</span></button>`).join('');
     $('summary').querySelectorAll('[data-stat]').forEach((b) => b.onclick = () => {
-      stats[b.dataset.stat].go(); setView('upcoming'); S.shown = PAGE; renderAll();
+      const s = stats[b.dataset.stat]; s.go(); setView(s.view); S.shown = PAGE; renderAll();
       $('chips').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }
 
   function baseSet() {
     const q = $('q').value.trim().toLowerCase(), src = $('fSource').value;
-    return (S.view === 'upcoming' ? upcoming() : latest()).filter((i) =>
-      (!src || i.src === src) &&
+    const set = S.view === 'upcoming' ? upcoming() : S.view === 'urgent' ? urgentSet() : adminFeed();
+    return set.filter((i) =>
+      (!src || S.view !== 'upcoming' || i.src === src) &&
       (!q || `${i.id} ${i.title} ${i.description} ${i.schedule || ''}`.toLowerCase().includes(q)));
   }
 
@@ -193,6 +203,13 @@
       if (i.bucket === 'tbd') return ['tbd', 'Date to be confirmed'];
       return [i.bucket, i.bucket === todayStr().slice(0, 7) ? `This month · ${fmtMonth(i.bucket + '-01')}` : fmtMonth(i.bucket + '-01')];
     }
+    if (S.view === 'urgent') {
+      if (!i.next) return ['u9', 'Date not announced'];
+      const days = (D(i.next) - Date.now()) / DAY;
+      if (days <= 7) return ['u0', 'Next 7 days'];
+      if (days <= 30) return ['u1', 'Next 30 days'];
+      return ['u2', 'Later'];
+    }
     const days = (Date.now() - D(i.date)) / DAY;
     if (days < 7) return ['w0', 'This week'];
     if (days < 14) return ['w1', 'Last week'];
@@ -202,13 +219,23 @@
   function itemHtml(i) {
     const themes = i.themes.filter((t) => t !== 'action' && t !== 'admin').map((t) => THEME_LABEL[t]);
     if (i.themes.includes('admin') && !themes.length) themes.push('Admin');
-    const sub = [
-      i.src === 'rm' ? 'Roadmap' : 'Message Center',
-      ...themes.slice(0, 2),
-    ].join('<i>·</i>') + (i.action ? '<i>·</i><span class="act">Action needed</span>' : '');
-    const when = S.view === 'upcoming'
-      ? `<span class="when">${esc(i.when)}</span>`
-      : `<span class="when ${STATUS_CLS[i.status] || ''}">${i.status ? esc(i.status) : fmtDay(i.date)}</span>`;
+    const act = i.action ? '<i>·</i><span class="act">Action needed</span>' : '';
+    let sub;
+    if (S.view === 'urgent') {
+      sub = [i.action ? '<span class="act">Action needed</span>' : '', i.themes.includes('retirement') ? 'Retirement' : '', i.major ? 'Major change' : '']
+        .filter(Boolean).join('<i>·</i>');
+    } else if (S.view === 'admin') {
+      sub = [...(i.tags || []).filter((t) => /impact|retirement|new feature|feature update/i.test(t)), ...themes.slice(0, 1)].slice(0, 3).join('<i>·</i>') + act;
+    } else {
+      sub = [i.src === 'rm' ? 'Roadmap' : 'Message Center', ...themes.slice(0, 2)].join('<i>·</i>') + act;
+    }
+    let when;
+    if (S.view === 'upcoming') when = `<span class="when">${esc(i.when)}</span>`;
+    else if (S.view === 'urgent') {
+      const soon = i.next && D(i.next) - Date.now() <= 7 * DAY;
+      const label = i.next ? fmtDay(i.next) : 'No date yet';  // next key date from the rollout schedule
+      when = `<span class="when${soon ? ' urgent' : ''}">${esc(label)}</span>`;
+    } else when = `<span class="when">${fmtDay(i.date)}</span>`;
     const meta = [
       `<span>${i.src === 'rm' ? 'Roadmap' : 'Message Center'} ${esc(i.id)}</span>`,
       i.status ? `<span class="${STATUS_CLS[i.status] || ''}">${esc(i.status)}</span>` : '',
@@ -237,9 +264,9 @@
     if (S.theme) list = list.filter((i) => i.themes.includes(S.theme));
     // Future months first (soonest at the top), then what is already rolling out, then undated
     const order = (i) => i.bucket === 'now' ? '8' : i.bucket === 'tbd' ? '9' : '1' + i.sortDate;
-    list = S.view === 'upcoming'
-      ? list.sort((a, b) => order(a).localeCompare(order(b)) || String(b.date).localeCompare(String(a.date)))
-      : list.sort((a, b) => String(b.date).localeCompare(String(a.date)));
+    if (S.view === 'upcoming') list.sort((a, b) => order(a).localeCompare(order(b)) || String(b.date).localeCompare(String(a.date)));
+    else if (S.view === 'urgent') list.sort((a, b) => (a.next || '9999').localeCompare(b.next || '9999') || Number(b.action) - Number(a.action) || String(b.date).localeCompare(String(a.date)));
+    else list.sort((a, b) => String(b.date).localeCompare(String(a.date)));
 
     const counts = {};
     list.forEach((i) => { const [k] = groupOf(i); counts[k] = (counts[k] || 0) + 1; });
@@ -270,6 +297,7 @@
   function setView(v) {
     S.view = v;
     document.querySelectorAll('.seg button').forEach((b) => b.classList.toggle('active', b.dataset.view === v));
+    $('fSource').hidden = v !== 'upcoming';
   }
 
   async function check() {

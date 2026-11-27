@@ -60,6 +60,9 @@ h1 { margin: 0; font-size: 30px; font-weight: 600; letter-spacing: -.025em; line
 .seg { display: inline-flex; padding: 3px; border-radius: 9px; background: var(--line); }
 .seg button { border: 0; background: transparent; padding: 5px 12px; border-radius: 7px; font: inherit; font-size: 13.5px; font-weight: 500; color: var(--muted); cursor: pointer; white-space: nowrap; }
 .seg button.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.seg .badge { display: inline-block; min-width: 18px; margin-left: 4px; padding: 0 5px; border-radius: 99px; background: var(--red); color: #fff; font-size: 11px; font-weight: 600; line-height: 17px; text-align: center; font-variant-numeric: tabular-nums; }
+.seg .badge:empty { display: none; }
+.when.urgent { color: var(--red); font-weight: 500; }
 .tools { display: flex; align-items: center; gap: 8px; flex: 1 1 260px; justify-content: flex-end; }
 .tools input, .tools select { font: inherit; font-size: 14px; padding: 6px 10px; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--surface); color: var(--text); min-width: 0; }
 .tools input { width: 100%; max-width: 200px; }
