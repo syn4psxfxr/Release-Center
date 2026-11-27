@@ -1,20 +1,26 @@
 # Copilot Release Center
 
-A static GitHub Pages site that tracks **Microsoft 365 Copilot** updates from two sources:
+A static GitHub Pages site that shows **what's coming to Microsoft 365 Copilot**, so the organization can prepare for it.
 
-| Source | What it covers | How it is read |
+| Source | What it adds | How it is read |
 |---|---|---|
-| [Microsoft 365 Roadmap](https://www.microsoft.com/microsoft-365/roadmap) (official) | Planned, rolling out and launched features | Public API `releasecommunications/api/v1/m365`, filtered to Copilot. **Action only**, since the API does not allow browser (CORS) requests |
-| [Message Center Archive (mc.merill.net)](https://mc.merill.net/) | Public mirror of the admin center Message Center | Public RSS feed, filtered to Copilot. Read by the Action **and** live by the "Check for updates" button |
+| [Microsoft 365 Roadmap](https://www.microsoft.com/microsoft-365/roadmap) (official) | Features in development or rolling out, with Preview and GA months | Public API `releasecommunications/api/v1/m365`, filtered to Copilot (Action only: the API blocks browser/CORS requests) |
+| [Message Center Archive (mc.merill.net)](https://mc.merill.net/) | Admin center announcements: rollout schedule per phase (Frontier, Targeted, GA), admin impact and "how to prepare" | `messages-index.json` for every active Copilot message, plus each recent message page (cached, re-read only when the message changes). The page also checks the RSS feed live |
 
 Live site: https://syn4psxfxr.github.io/Release-Center/
 
+## What the page shows
+
+- **At a glance:** releases landing in the next 30 days, items that need admin preparation, Frontier releases ahead, and retirements.
+- **Upcoming:** a timeline by month (soonest first), then what is already rolling out, then items with no date yet. Each item opens to show the description, the rollout schedule and how to prepare.
+- **Themes:** Action needed, Frontier, Cowork, Agents, AI models, Admin & governance, Retirements (keyword and tag based).
+- **Latest announcements:** everything published in the last 60 days, newest first.
+
 ## How it works
 
-- `scripts/fetch-data.mjs` (Node 18+, no dependencies) downloads both sources, keeps only M365 Copilot items, and writes `data/roadmap.json`, `data/messagecenter.json` and `data/meta.json`. History is preserved: messages that drop out of the RSS feed stay in the file, and Roadmap status changes are recorded (`previousStatus`).
+- `scripts/fetch-data.mjs` (Node 18+, no dependencies) builds `data/roadmap.json`, `data/messagecenter.json` and `data/meta.json`. Dates in rollout text ("mid-December 2026", "December 9, 2026") are turned into calendar dates. History is preserved, and Roadmap status changes are recorded (`previousStatus`).
 - `.github/workflows/update-data.yml` runs the script **every 6 hours** and on demand (Actions → *Update Copilot data* → *Run workflow*), then commits the new data. GitHub Pages republishes automatically.
-- On the page, **Check for updates** reloads the published data and queries the Message Center live.
-- Read/new state is stored per browser (localStorage). Items from the 14 days before your first visit show as new.
+- New-item dots are per browser (localStorage): they mark updates that arrived after your first visit.
 
 ## Setup
 
@@ -32,4 +38,4 @@ python -m http.server 8000
 
 ## Adjust the filter
 
-Edit `COPILOT_PRODUCTS` and `NON_M365` in `scripts/fetch-data.mjs` (and the matching constants in `app.js` for the live check).
+Edit `COPILOT_PRODUCTS`, `NON_M365` and `THEMES` in `scripts/fetch-data.mjs` (and the matching constants in `app.js`).

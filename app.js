@@ -1,17 +1,36 @@
 /* Copilot Release Center — static site for GitHub Pages.
- * Data lives in /data/*.json and is refreshed by a GitHub Action (scripts/fetch-data.mjs).
- * The refresh button reloads that data and queries the Message Center feed live
- * (mc.merill.net allows CORS; the official Roadmap API does not, so it is only refreshed by the Action).
+ * Data lives in /data/*.json and is refreshed every 6 hours by a GitHub Action (scripts/fetch-data.mjs).
+ * The refresh button reloads that data and checks the Message Center RSS feed live for brand-new posts.
  */
 (() => {
   'use strict';
 
   const MC_RSS = 'https://mc.merill.net/rss.xml';
   const COPILOT_CATS = ['Microsoft Copilot (Microsoft 365)', 'Microsoft 365 Copilot Chat', 'Microsoft 365 Copilot'];
-  const NON_M365 = /power platform|copilot studio|dynamics|github copilot|security copilot/i;
-  const PAGE = 25;
+  const NON_M365 = /power platform|power automate|power apps|power pages|copilot studio|dynamics|github copilot|security copilot|power bi|dataverse|fabric/i;
+  const PAGE = 40;
   const DAY = 864e5;
+  const LATEST_DAYS = 60;      // "Latest announcements" window
+  const NO_DATE_DAYS = 45;     // undated Message Center posts stay in "Upcoming" this long
   const STATUS_CLS = { 'Launched': 'st-launched', 'Rolling out': 'st-rolling', 'In development': 'st-dev', 'Cancelled': 'st-cancel' };
+
+  const THEMES = [
+    ['action', 'Action needed'],
+    ['frontier', 'Frontier'],
+    ['cowork', 'Cowork'],
+    ['agents', 'Agents'],
+    ['models', 'AI models'],
+    ['admin', 'Admin & governance'],
+    ['retirement', 'Retirements'],
+  ];
+  const THEME_LABEL = Object.fromEntries(THEMES);
+  const THEME_RE = {
+    frontier: /\bfrontier\b/i, cowork: /\bcowork\b/i,
+    agents: /\bagents?\b|autopilot|researcher|analyst agent|facilitator/i,
+    models: /\bgpt[- ]?\d|claude|\bmodels?\b|anthropic|openai/i,
+    admin: /\badmins?\b|admin center|polic(y|ies)|governance|controls?\b|settings?\b|licens|billing|credits|compliance|purview|data boundary|retention|audit|security|permissions?/i,
+    retirement: /retir|deprecat|end of support|no longer (be )?(available|supported)|sunset/i,
+  };
 
   // ---------- per-browser storage ----------
   const store = {
@@ -19,32 +38,77 @@
     set(k, v) { try { localStorage.setItem('crc:' + k, JSON.stringify(v)); } catch { /* unavailable */ } },
   };
   let baseline = store.get('baseline', null);
-  // New-item dots only for updates that arrive after your first visit
   if (!baseline) { baseline = Date.now(); store.set('baseline', baseline); }
   const readSet = new Set(store.get('read', []));
   const saveRead = () => store.set('read', [...readSet].slice(-5000));
 
-  // ---------- state ----------
-  const S = { roadmap: [], mc: [], meta: {}, tab: 'all', shown: PAGE, liveAt: null };
+  // ---------- helpers ----------
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const fmtDate = (d) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  const fmtShort = (d) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  const month = (s) => (s || '').replace(/\s*CY/, ' ');
-  // Drop the repetitive product prefix ("Microsoft Copilot (Microsoft 365): ...") for a cleaner list
-  const cleanTitle = (t) => (t || '').replace(/^\s*(Microsoft\s+Copilot\s*\(Microsoft 365\)|Microsoft 365 Copilot( Chat)?|M365 Copilot|Microsoft Copilot)\s*[:|-]\s*/i, '').replace(/^./, (c) => c.toUpperCase());
+  const D = (s) => new Date(s.length === 10 ? s + 'T12:00:00' : s);
+  const todayStr = () => new Date().toISOString().slice(0, 10);
+  const monthStartStr = () => todayStr().slice(0, 8) + '01';
+  const fmtDay = (s) => D(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const fmtDate = (s) => D(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const fmtMonth = (s) => D(s).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  const fmtMonthShort = (s) => D(s).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+  const cleanTitle = (t) => (t || '')
+    .replace(/^\s*(Microsoft\s+Copilot\s*\(Microsoft 365\)|Microsoft 365 Copilot( Chat)?|M365 Copilot|Microsoft Copilot)\s*[:|-]\s*/i, '')
+    .replace(/^./, (c) => c.toUpperCase());
 
-  const normRoadmap = (x) => ({
-    src: 'rm', id: x.id, key: `rm:${x.id}:${x.modified}`, title: x.title, description: x.description, url: x.url,
-    status: x.status, groups: x.products, date: x.modified, ga: x.gaDate, preview: x.previewDate,
-  });
-  const normMc = (x) => ({
-    src: 'mc', id: x.id, key: `mc:${x.id}`, title: x.title, description: x.description, url: x.url,
-    status: null, groups: x.categories, date: x.published,
-  });
-  const allItems = () => [...S.roadmap.map(normRoadmap), ...S.mc.map(normMc)];
-  const items = () => S.tab === 'roadmap' ? S.roadmap.map(normRoadmap) : S.tab === 'mc' ? S.mc.map(normMc) : allItems();
-  const isNew = (it) => new Date(it.date).getTime() > baseline && !readSet.has(it.key);
+  // ---------- state ----------
+  const S = { roadmap: [], mc: [], meta: {}, view: 'upcoming', theme: '', soon: false, shown: PAGE, liveAt: null, all: [] };
+
+  // Normalize both sources into one shape, and work out *when* each item lands
+  function normRoadmap(x) {
+    const it = {
+      src: 'rm', id: x.id, key: `rm:${x.id}:${x.modified}`, title: x.title, description: x.description, url: x.url,
+      status: x.status, date: x.modified, themes: x.themes || [], preview: x.preview, ga: x.ga,
+      previewLabel: x.previewDate, gaLabel: x.gaDate, platforms: x.platforms || [], action: false,
+    };
+    if (x.status === 'In development' || x.status === 'Rolling out') {
+      const ms = monthStartStr();
+      const next = [['Preview', x.preview], ['GA', x.ga]].filter(([, d]) => d && d >= ms).sort((a, b) => a[1].localeCompare(b[1]))[0];
+      if (next) {
+        it.bucket = next[1].slice(0, 7); it.sortDate = next[1];
+        it.when = `${next[0]} ${fmtMonthShort(next[1])}`;
+        if (next[0] === 'Preview' && x.ga && x.ga > next[1]) it.when += ` · GA ${fmtMonthShort(x.ga)}`;
+      } else if (x.status === 'Rolling out') { it.bucket = 'now'; it.sortDate = x.modified; it.when = 'Rolling out'; }
+      else { it.bucket = 'tbd'; it.sortDate = x.modified; it.when = 'Date to be confirmed'; }
+    }
+    return it;
+  }
+
+  function normMc(x) {
+    const it = {
+      src: 'mc', id: x.id, key: `mc:${x.id}`, title: x.title, description: x.description, url: x.url,
+      status: null, date: x.published, themes: [...(x.themes || [])], schedule: x.schedule, prep: x.action,
+      action: !!x.actionRequired, tags: x.tags || [], live: x.live,
+    };
+    if (it.action) it.themes.push('action');
+    const today = todayStr();
+    const dates = x.dates || [];
+    const future = dates.filter((d) => d >= today);
+    if (future.length && dates[0] >= today) {
+      it.bucket = dates[0].slice(0, 7); it.sortDate = dates[0];
+      it.when = `${it.themes.includes('retirement') ? 'Changes' : 'Starts'} ${fmtDay(dates[0])}`;
+    } else if (future.length) {
+      it.bucket = 'now'; it.sortDate = future[future.length - 1];
+      it.when = `Until ${fmtDay(future[future.length - 1])}`;
+    } else if (!dates.length && Date.now() - D(x.published) < NO_DATE_DAYS * DAY && !/available now|is now (available|live|rolling)/i.test(`${x.schedule} ${x.title}`)) {
+      it.bucket = 'tbd'; it.sortDate = x.published; it.when = 'Date not announced';
+    }
+    return it;
+  }
+
+  function rebuild() {
+    S.all = [...S.roadmap.map(normRoadmap), ...S.mc.map(normMc)];
+  }
+
+  const isNew = (it) => D(it.date).getTime() > baseline && !readSet.has(it.key);
+  const isSoon = (it) => it.bucket && it.bucket !== 'tbd' && it.bucket !== 'now' && D(it.sortDate) - Date.now() <= 30 * DAY;
+  const upcoming = () => S.all.filter((i) => i.bucket);
+  const latest = () => S.all.filter((i) => Date.now() - D(i.date) <= LATEST_DAYS * DAY);
 
   // ---------- data ----------
   async function loadJson(path) {
@@ -58,6 +122,7 @@
     S.roadmap = rm; S.meta = meta;
     const live = S.mc.filter((m) => m.live && !mc.some((x) => x.id === m.id));
     S.mc = [...live, ...mc];
+    rebuild();
   }
 
   async function liveMessageCenter() {
@@ -65,132 +130,147 @@
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const doc = new DOMParser().parseFromString(await r.text(), 'text/xml');
     const known = new Set(S.mc.map((m) => m.id));
+    let added = 0;
     for (const el of doc.querySelectorAll('item')) {
       const t = (q) => el.querySelector(q)?.textContent?.trim() || '';
       const full = t('title'); const m = full.match(/^(MC\d+):\s*(.*)$/);
       const cats = [...el.querySelectorAll('category')].map((c) => c.textContent.trim()).filter((c) => c !== 'Message Center');
-      const msg = { id: m ? m[1] : t('guid'), title: m ? m[2] : full, description: t('description'), categories: cats, published: new Date(t('pubDate')).toISOString(), url: t('link'), live: true };
-      const copilot = cats.some((c) => COPILOT_CATS.includes(c)) ||
-        (/\bcopilot\b/i.test(msg.title) && !NON_M365.test(msg.title) && !cats.some((c) => /power platform|power bi|dynamics|dataverse/i.test(c)));
-      if (copilot && !known.has(msg.id)) { S.mc.push(msg); known.add(msg.id); }
+      const title = m ? m[2] : full;
+      const copilot = cats.some((c) => COPILOT_CATS.includes(c)) || (/\bcopilot\b/i.test(title) && !NON_M365.test(title) && !cats.some((c) => NON_M365.test(c)));
+      const id = m ? m[1] : t('guid');
+      if (!copilot || known.has(id)) continue;
+      const description = t('description');
+      S.mc.push({ id, title, description, published: new Date(t('pubDate')).toISOString(), url: t('link'), live: true,
+        themes: Object.keys(THEME_RE).filter((k) => THEME_RE[k].test(`${title} ${description}`)), dates: [] });
+      known.add(id); added++;
     }
-    S.mc.sort((a, b) => b.published.localeCompare(a.published));
+    S.mc.sort((a, b) => String(b.published).localeCompare(String(a.published)));
     S.liveAt = Date.now();
+    rebuild();
+    return added;
   }
 
-  // ---------- UI ----------
+  // ---------- rendering ----------
   function toast(msg, err) {
     const t = $('toast'); t.textContent = msg; t.className = 'toast' + (err ? ' err' : ''); t.hidden = false;
     clearTimeout(toast.h); toast.h = setTimeout(() => { t.hidden = true; }, 5000);
   }
 
   function renderSummary() {
-    const since = Date.now() - 30 * DAY;
-    const mc30 = S.mc.filter((x) => new Date(x.published) >= since).length;
-    const rolling = S.roadmap.filter((x) => x.status === 'Rolling out').length;
-    const dev = S.roadmap.filter((x) => x.status === 'In development').length;
+    const up = upcoming();
     const stats = [
-      { v: mc30, l: 'Announcements, last 30 days', go: { tab: 'mc', period: '30' } },
-      { v: rolling, l: 'Rolling out now', go: { tab: 'roadmap', status: 'Rolling out', period: '0' } },
-      { v: dev, l: 'In development', go: { tab: 'roadmap', status: 'In development', period: '0' } },
+      { v: up.filter(isSoon).length, l: 'Landing in the next 30 days', on: S.soon && !S.theme, go: () => { S.soon = true; S.theme = ''; } },
+      { v: up.filter((i) => i.action).length, l: 'Need admin preparation', alert: true, on: S.theme === 'action', go: () => { S.soon = false; S.theme = 'action'; } },
+      { v: up.filter((i) => i.themes.includes('frontier')).length, l: 'Frontier releases ahead', on: S.theme === 'frontier', go: () => { S.soon = false; S.theme = 'frontier'; } },
+      { v: up.filter((i) => i.themes.includes('retirement')).length, l: 'Retirements and changes', on: S.theme === 'retirement', go: () => { S.soon = false; S.theme = 'retirement'; } },
     ];
-    $('summary').innerHTML = stats.map((s, i) => `<button class="stat" type="button" data-stat="${i}"><span class="v">${s.v.toLocaleString('en-US')}</span><span class="l">${s.l}</span></button>`).join('');
+    $('summary').innerHTML = stats.map((s, i) =>
+      `<button class="stat${s.alert && s.v ? ' alert' : ''}${s.on && S.view === 'upcoming' ? ' on' : ''}" type="button" data-stat="${i}"><span class="v">${s.v}</span><span class="l">${s.l}</span></button>`).join('');
     $('summary').querySelectorAll('[data-stat]').forEach((b) => b.onclick = () => {
-      const g = stats[b.dataset.stat].go;
-      setTab(g.tab);
-      $('fStatus').value = g.status || ''; $('fPeriod').value = g.period; $('fProduct').value = ''; $('q').value = '';
-      render(); $('list').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      stats[b.dataset.stat].go(); setView('upcoming'); S.shown = PAGE; renderAll();
+      $('chips').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }
 
-  function setupFilters() {
-    const all = items();
-    const st = $('fStatus'); const prev = st.value;
-    const statuses = ['Rolling out', 'In development', 'Launched', 'Cancelled'].filter((s) => all.some((i) => i.status === s));
-    st.innerHTML = `<option value="">All statuses</option>` + statuses.map((s) => `<option>${esc(s)}</option>`).join('');
-    st.value = statuses.includes(prev) ? prev : '';
-    st.hidden = S.tab === 'mc';
-
-    const fp = $('fProduct'); const pv = fp.value;
-    const cnt = {}; all.forEach((i) => (i.groups || []).forEach((g) => { cnt[g] = (cnt[g] || 0) + 1; }));
-    const groups = Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a]);
-    fp.innerHTML = `<option value="">All products</option>` + groups.map((g) => `<option>${esc(g)}</option>`).join('');
-    fp.value = groups.includes(pv) ? pv : '';
+  function baseSet() {
+    const q = $('q').value.trim().toLowerCase(), src = $('fSource').value;
+    return (S.view === 'upcoming' ? upcoming() : latest()).filter((i) =>
+      (!src || i.src === src) &&
+      (!q || `${i.id} ${i.title} ${i.description} ${i.schedule || ''}`.toLowerCase().includes(q)));
   }
 
-  function filtered() {
-    const q = $('q').value.trim().toLowerCase();
-    const st = $('fStatus').value, pr = $('fProduct').value, days = Number($('fPeriod').value);
-    const since = days ? Date.now() - days * DAY : 0;
-    return items()
-      .filter((i) =>
-        (!q || `${i.id} ${i.title} ${i.description}`.toLowerCase().includes(q)) &&
-        (!st || S.tab === 'mc' || i.status === st) &&
-        (!pr || (i.groups || []).includes(pr)) &&
-        (!since || new Date(i.date).getTime() >= since))
-      .sort((a, b) => String(b.date).localeCompare(String(a.date)));
+  function renderChips(set) {
+    const count = (k) => set.filter((i) => i.themes.includes(k)).length;
+    $('chips').innerHTML = [`<button class="chip${!S.theme && !S.soon ? ' on' : ''}" data-theme="">All<span class="n">${set.length}</span></button>`]
+      .concat(S.soon ? [`<button class="chip on" data-theme="__soon">Next 30 days<span class="n">${set.filter(isSoon).length}</span></button>`] : [])
+      .concat(THEMES.map(([k, l]) => `<button class="chip${S.theme === k ? ' on' : ''}" data-theme="${k}">${l}<span class="n">${count(k)}</span></button>`))
+      .join('');
   }
 
-  function groupLabel(d) {
-    const days = (Date.now() - new Date(d).getTime()) / DAY;
-    if (days < 7) return 'This week';
-    if (days < 14) return 'Last week';
-    return new Date(d).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  function groupOf(i) {
+    if (S.view === 'upcoming') {
+      if (i.bucket === 'now') return ['now', 'Already rolling out'];
+      if (i.bucket === 'tbd') return ['tbd', 'Date to be confirmed'];
+      return [i.bucket, i.bucket === todayStr().slice(0, 7) ? `This month · ${fmtMonth(i.bucket + '-01')}` : fmtMonth(i.bucket + '-01')];
+    }
+    const days = (Date.now() - D(i.date)) / DAY;
+    if (days < 7) return ['w0', 'This week'];
+    if (days < 14) return ['w1', 'Last week'];
+    return [i.date.slice(0, 7), fmtMonth(i.date.slice(0, 7) + '-01')];
   }
 
-  function item(i) {
-    const tag = i.status
-      ? `<span class="tag ${STATUS_CLS[i.status] || ''}">${esc(i.status)}</span>`
-      : `<span class="tag">${S.tab === 'mc' ? fmtShort(i.date) : 'Announcement'}</span>`;
+  function itemHtml(i) {
+    const themes = i.themes.filter((t) => t !== 'action' && t !== 'admin').map((t) => THEME_LABEL[t]);
+    if (i.themes.includes('admin') && !themes.length) themes.push('Admin');
+    const sub = [
+      i.src === 'rm' ? 'Roadmap' : 'Message Center',
+      ...themes.slice(0, 2),
+    ].join('<i>·</i>') + (i.action ? '<i>·</i><span class="act">Action needed</span>' : '');
+    const when = S.view === 'upcoming'
+      ? `<span class="when">${esc(i.when)}</span>`
+      : `<span class="when ${STATUS_CLS[i.status] || ''}">${i.status ? esc(i.status) : fmtDay(i.date)}</span>`;
     const meta = [
       `<span>${i.src === 'rm' ? 'Roadmap' : 'Message Center'} ${esc(i.id)}</span>`,
+      i.status ? `<span class="${STATUS_CLS[i.status] || ''}">${esc(i.status)}</span>` : '',
+      i.previewLabel ? `<span>Preview ${esc(i.previewLabel.replace(' CY', ' '))}</span>` : '',
+      i.gaLabel ? `<span>GA ${esc(i.gaLabel.replace(' CY', ' '))}</span>` : '',
       `<span>${i.src === 'rm' ? 'Updated' : 'Published'} ${fmtDate(i.date)}</span>`,
-      i.preview ? `<span>Preview ${esc(month(i.preview))}</span>` : '',
-      i.ga ? `<span>GA ${esc(month(i.ga))}</span>` : '',
-      `<span><a href="${esc(i.url)}" target="_blank" rel="noopener">Open source ↗</a></span>`,
+      `<span><a href="${esc(i.url)}" target="_blank" rel="noopener">Open ↗</a></span>`,
+      i.src === 'mc' ? `<span><a href="https://admin.microsoft.com/#/MessageCenter/:/messages/${esc(i.id)}" target="_blank" rel="noopener">Admin center ↗</a></span>` : '',
     ].join('');
     return `<div class="item" data-key="${esc(i.key)}">
       <button class="row" type="button" aria-expanded="false">
-        <span class="t">${isNew(i) ? '<span class="dot" title="New"></span>' : ''}${esc(cleanTitle(i.title))}</span>${tag}
+        <span><span class="t">${isNew(i) ? '<span class="dot" title="New since your last visit"></span>' : ''}${esc(cleanTitle(i.title))}</span><span class="sub">${sub}</span></span>${when}
       </button>
-      <div class="detail" hidden>${i.description ? `<p>${esc(i.description)}</p>` : ''}<div class="meta">${meta}</div></div>
+      <div class="detail" hidden>
+        ${i.description ? `<p>${esc(i.description)}</p>` : ''}
+        ${i.schedule ? `<h4>Rollout</h4><p>${esc(i.schedule)}</p>` : ''}
+        ${i.prep ? `<h4>How to prepare</h4><p>${esc(i.prep)}</p>` : ''}
+        <div class="meta">${meta}</div>
+      </div>
     </div>`;
   }
 
-  function render() {
-    const list = filtered();
+  function renderList(set) {
+    let list = set;
+    if (S.soon) list = list.filter(isSoon);
+    if (S.theme) list = list.filter((i) => i.themes.includes(S.theme));
+    // Future months first (soonest at the top), then what is already rolling out, then undated
+    const order = (i) => i.bucket === 'now' ? '8' : i.bucket === 'tbd' ? '9' : '1' + i.sortDate;
+    list = S.view === 'upcoming'
+      ? list.sort((a, b) => order(a).localeCompare(order(b)) || String(b.date).localeCompare(String(a.date)))
+      : list.sort((a, b) => String(b.date).localeCompare(String(a.date)));
+
+    const counts = {};
+    list.forEach((i) => { const [k] = groupOf(i); counts[k] = (counts[k] || 0) + 1; });
     const shown = list.slice(0, S.shown);
     let html = '', last = '';
     for (const i of shown) {
-      const g = groupLabel(i.date);
-      if (g !== last) { html += `<h2 class="group">${g}</h2>`; last = g; }
-      html += item(i);
+      const [k, label] = groupOf(i);
+      if (k !== last) { html += `<div class="group"><h2>${label}</h2><span>${counts[k]}</span></div>`; last = k; }
+      html += itemHtml(i);
     }
-    $('list').innerHTML = html || `<div class="empty">Nothing here with these filters.<br><button class="text-btn" type="button" data-clear>Reset filters</button></div>`;
+    $('list').innerHTML = html || `<div class="empty">Nothing here with these filters.<br><button class="text-btn" type="button" data-clear>Show everything</button></div>`;
     $('btnMore').hidden = list.length <= shown.length;
-    $('btnMore').textContent = `Show more (${(list.length - shown.length).toLocaleString('en-US')})`;
-    const active = [$('fStatus').value, $('fProduct').value, $('fPeriod').value !== '30' ? 1 : ''].filter(Boolean).length;
-    $('filterCount').textContent = active ? `· ${active}` : '';
+    $('btnMore').textContent = `Show more (${list.length - shown.length})`;
   }
 
   function renderHeader() {
     const r = S.meta?.lastRun;
-    const t = S.liveAt && (!r || S.liveAt > new Date(r)) ? S.liveAt : r;
+    const t = S.liveAt && (!r || S.liveAt > D(r)) ? S.liveAt : r;
     $('lastUpdate').textContent = t ? `Updated ${new Date(t).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}` : '';
   }
 
-  function setTab(tab) {
-    S.tab = tab; S.shown = PAGE;
-    document.querySelectorAll('.seg button').forEach((t) => t.classList.toggle('active', t.dataset.tab === tab));
-    setupFilters();
+  function renderAll() {
+    renderHeader(); renderSummary();
+    const set = baseSet();
+    renderChips(set); renderList(set);
   }
 
-  function resetFilters() {
-    $('q').value = ''; $('fStatus').value = ''; $('fProduct').value = ''; $('fPeriod').value = '30';
-    S.shown = PAGE; render();
+  function setView(v) {
+    S.view = v;
+    document.querySelectorAll('.seg button').forEach((b) => b.classList.toggle('active', b.dataset.view === v));
   }
-
-  function refreshAll() { renderHeader(); renderSummary(); setupFilters(); render(); }
 
   async function check() {
     const b = $('btnCheck'); b.disabled = true; b.classList.add('spin');
@@ -199,7 +279,7 @@
     try { await loadData(); } catch { err = true; }
     try { await liveMessageCenter(); } catch { err = true; }
     const found = S.roadmap.length + S.mc.length - before;
-    refreshAll(); b.disabled = false; b.classList.remove('spin');
+    renderAll(); b.disabled = false; b.classList.remove('spin');
     toast(found > 0 ? `${found} new ${found === 1 ? 'update' : 'updates'} found.` : err ? 'Could not reach one of the sources. Try again later.' : 'You are up to date.', err && found <= 0);
   }
 
@@ -212,7 +292,7 @@
     $('wfLink').innerHTML = ` · <a href="https://github.com/${esc(owner)}/${esc(repo)}/actions/workflows/update-data.yml" target="_blank" rel="noopener">run now</a>`;
   }
 
-  // ---------- theme ----------
+  // ---------- theme (light/dark) ----------
   const applyTheme = (t) => { if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme; };
   applyTheme(store.get('theme', null));
   $('btnTheme').onclick = () => {
@@ -221,14 +301,20 @@
   };
 
   // ---------- events ----------
-  document.querySelectorAll('.seg button').forEach((t) => t.onclick = () => { setTab(t.dataset.tab); render(); });
-  ['q', 'fStatus', 'fProduct', 'fPeriod'].forEach((id) => $(id).addEventListener(id === 'q' ? 'input' : 'change', () => { S.shown = PAGE; render(); }));
-  $('btnFilters').onclick = () => { const f = $('filters'); f.hidden = !f.hidden; $('btnFilters').setAttribute('aria-expanded', String(!f.hidden)); };
-  $('btnReset').onclick = resetFilters;
-  $('btnMore').onclick = () => { S.shown += PAGE; render(); };
+  document.querySelectorAll('.seg button').forEach((b) => b.onclick = () => { setView(b.dataset.view); S.soon = false; S.shown = PAGE; renderAll(); });
+  $('q').addEventListener('input', () => { S.shown = PAGE; renderAll(); });
+  $('fSource').addEventListener('change', () => { S.shown = PAGE; renderAll(); });
+  $('chips').addEventListener('click', (e) => {
+    const c = e.target.closest('[data-theme]'); if (!c) return;
+    const k = c.dataset.theme;
+    if (k === '__soon') S.soon = false;
+    else { S.theme = S.theme === k ? '' : k; if (!k) S.soon = false; }
+    S.shown = PAGE; renderAll();
+  });
+  $('btnMore').onclick = () => { S.shown += PAGE; renderAll(); };
   $('btnCheck').onclick = check;
   $('list').addEventListener('click', (e) => {
-    if (e.target.closest('[data-clear]')) { resetFilters(); return; }
+    if (e.target.closest('[data-clear]')) { $('q').value = ''; $('fSource').value = ''; S.theme = ''; S.soon = false; renderAll(); return; }
     const row = e.target.closest('.row'); if (!row) return;
     const it = row.parentElement, d = it.querySelector('.detail');
     d.hidden = !d.hidden; row.setAttribute('aria-expanded', String(!d.hidden));
@@ -237,5 +323,5 @@
 
   // ---------- start ----------
   setupWorkflowLink();
-  loadData().then(refreshAll).catch((e) => { toast(`Could not load data (${e.message}).`, true); refreshAll(); });
+  loadData().then(renderAll).catch((e) => { toast(`Could not load data (${e.message}).`, true); renderAll(); });
 })();

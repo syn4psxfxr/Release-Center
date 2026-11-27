@@ -1,5 +1,5 @@
 {
- "lastRun": "2026-11-27T17:12:49.105Z",
+ "lastRun": "2026-11-27T17:25:49.615Z",
  "sources": {
   "roadmap": {
    "ok": true,
@@ -7,15 +7,15 @@
    "fetched": 645,
    "added": 0,
    "changed": 0,
-   "updated": "2026-11-27T17:12:49.105Z"
+   "updated": "2026-11-27T17:25:49.615Z"
   },
   "messageCenter": {
    "ok": true,
-   "total": 120,
-   "fetched": 120,
+   "total": 575,
+   "fetched": 575,
    "added": 0,
    "changed": 0,
-   "updated": "2026-11-27T17:12:49.105Z"
+   "updated": "2026-11-27T17:25:49.615Z"
   }
  }
 }

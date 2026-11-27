@@ -4,18 +4,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Copilot Release Center</title>
-  <meta name="description" content="Microsoft 365 Copilot updates from the official Microsoft 365 Roadmap and the Message Center.">
+  <meta name="description" content="What's coming to Microsoft 365 Copilot: upcoming releases from the official Roadmap and the Message Center, so your organization can prepare.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%235b5fc7'/><path d='M9 21l5-10 4 7 2-3 3 6' stroke='white' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="styles.css?v=4">
 </head>
 <body>
   <main class="wrap">
     <header class="top">
       <div>
         <p class="eyebrow">Microsoft 365 Copilot</p>
-        <h1>Release Center</h1>
+        <h1>What's coming</h1>
       </div>
       <div class="actions">
         <span id="lastUpdate" class="muted small"></span>
@@ -28,34 +28,26 @@
       </div>
     </header>
 
-    <section class="summary" id="summary" aria-label="Last 30 days"></section>
+    <section class="summary" id="summary" aria-label="At a glance"></section>
 
     <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
     <div class="controls">
-      <div class="seg" role="tablist">
-        <button role="tab" data-tab="all" class="active">All</button>
-        <button role="tab" data-tab="roadmap">Roadmap</button>
-        <button role="tab" data-tab="mc">Message Center</button>
+      <div class="seg" role="tablist" aria-label="View">
+        <button role="tab" data-view="upcoming" class="active">Upcoming</button>
+        <button role="tab" data-view="latest">Latest announcements</button>
       </div>
       <div class="tools">
         <input id="q" type="search" placeholder="Search" aria-label="Search">
-        <button id="btnFilters" class="text-btn" type="button" aria-expanded="false">Filters<span id="filterCount"></span></button>
+        <select id="fSource" aria-label="Source">
+          <option value="">All sources</option>
+          <option value="rm">Roadmap</option>
+          <option value="mc">Message Center</option>
+        </select>
       </div>
     </div>
 
-    <section class="filters" id="filters" hidden>
-      <select id="fStatus" aria-label="Status"></select>
-      <select id="fProduct" aria-label="Product"></select>
-      <select id="fPeriod" aria-label="Period">
-        <option value="0">Any time</option>
-        <option value="7">Last 7 days</option>
-        <option value="30" selected>Last 30 days</option>
-        <option value="90">Last 90 days</option>
-        <option value="365">Last year</option>
-      </select>
-      <button id="btnReset" class="text-btn" type="button">Reset</button>
-    </section>
+    <nav class="chips" id="chips" aria-label="Themes"></nav>
 
     <section id="list" class="list"></section>
     <div class="more-wrap"><button id="btnMore" class="text-btn" type="button" hidden>Show more</button></div>
@@ -63,11 +55,12 @@
     <footer class="foot muted small">
       Sources: <a href="https://www.microsoft.com/microsoft-365/roadmap?filters=Microsoft%20Copilot%20(Microsoft%20365)" target="_blank" rel="noopener">Microsoft 365 Roadmap</a>
       and <a href="https://mc.merill.net/" target="_blank" rel="noopener">Message Center Archive</a>.
-      Message Center posts vary by tenant; confirm in your <a href="https://admin.microsoft.com/#/MessageCenter" target="_blank" rel="noopener">admin center</a>.
+      Dates are Microsoft's current estimates and can move; Message Center posts vary by tenant, so confirm in your
+      <a href="https://admin.microsoft.com/#/MessageCenter" target="_blank" rel="noopener">admin center</a>.
       Refreshed every 6 hours<span id="wfLink"></span>.
     </footer>
   </main>
 
-  <script src="app.js?v=3"></script>
+  <script src="app.js?v=4"></script>
 </body>
 </html>

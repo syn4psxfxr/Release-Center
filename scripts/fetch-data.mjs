@@ -1,8 +1,10 @@
-// Fetches Microsoft 365 Copilot updates from two sources and writes them to /data:
-//  1) Official Microsoft 365 Roadmap -> https://www.microsoft.com/releasecommunications/api/v1/m365
-//  2) Message Center (admin center) via the public mc.merill.net archive -> https://mc.merill.net/rss.xml
-// No dependencies: runs on Node 18+ (native fetch).
-// Keeps history: items already seen stay in the file, and each item gets "firstSeen".
+// Builds the Microsoft 365 Copilot release data used by the site, from two sources:
+//  1) Official Microsoft 365 Roadmap API -> https://www.microsoft.com/releasecommunications/api/v1/m365
+//  2) Message Center (admin center), via the public mc.merill.net archive:
+//       - https://mc.merill.net/messages-index.json  (structured index of all active messages)
+//       - https://mc.merill.net/message/<MC id>       (detail page: rollout schedule + admin actions)
+// Output: data/roadmap.json, data/messagecenter.json, data/meta.json
+// No dependencies: runs on Node 18+ (native fetch). Detail pages are cached and only re-read when a message changes.
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
@@ -12,50 +14,94 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DATA = join(ROOT, 'data');
 
 const ROADMAP_API = 'https://www.microsoft.com/releasecommunications/api/v1/m365';
-const MC_RSS = 'https://mc.merill.net/rss.xml';
+const MC_INDEX = 'https://mc.merill.net/messages-index.json';
+const MC_PAGE = (id) => `https://mc.merill.net/message/${id}`;
+const UA = { 'User-Agent': 'copilot-release-center (GitHub Actions)', Accept: '*/*' };
 
-// Products/categories treated as "Microsoft 365 Copilot"
+// Message Center posts older than this are kept but not re-scanned for a rollout schedule
+const DETAIL_WINDOW_DAYS = 240;
+const DETAIL_CONCURRENCY = 4;
+
+// ---------- what counts as "Microsoft 365 Copilot" ----------
 const COPILOT_PRODUCTS = ['Microsoft Copilot (Microsoft 365)', 'Microsoft 365 Copilot Chat', 'Microsoft 365 Copilot'];
-const isCopilotText = (s) => /\bcopilot\b/i.test(s || '');
-// Copilot from other product lines (Power Platform, Dynamics, Security, GitHub...) is excluded unless the product is M365 Copilot
-const NON_M365 = /power platform|copilot studio|dynamics|github copilot|security copilot/i;
+const NON_M365 = /power platform|power automate|power apps|power pages|copilot studio|dynamics|github copilot|security copilot|power bi|dataverse|fabric/i;
+const isCopilot = (title, services) =>
+  services.some((s) => COPILOT_PRODUCTS.includes(s)) ||
+  (/\bcopilot\b/i.test(title) && !NON_M365.test(title) && !services.some((s) => NON_M365.test(s)));
 
+// ---------- themes ----------
+const THEMES = [
+  ['frontier', /\bfrontier\b/i],
+  ['cowork', /\bcowork\b/i],
+  ['agents', /\bagents?\b|autopilot|researcher|analyst agent|facilitator/i],
+  ['models', /\bgpt[- ]?\d|claude|\bmodels?\b|anthropic|openai/i],
+  ['admin', /\badmins?\b|admin center|polic(y|ies)|governance|controls?\b|settings?\b|licens|billing|credits|compliance|purview|data boundary|retention|audit|security|permissions?/i],
+  ['retirement', /retir|deprecat|end of support|no longer (be )?(available|supported)|sunset/i],
+];
+const themesOf = (text, extra = []) => [...new Set([...THEMES.filter(([, re]) => re.test(text)).map(([k]) => k), ...extra])];
+
+// ---------- dates ----------
+const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+const ymd = (y, m, d) => `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+
+// "December CY2026" -> "2026-12-01"
+function roadmapDate(s) {
+  const m = (s || '').match(/([A-Za-z]+)\s+CY(\d{4})/);
+  const i = m ? MONTHS.indexOf(m[1].toLowerCase()) : -1;
+  return i < 0 ? null : ymd(Number(m[2]), i, 1);
+}
+
+// All dates mentioned in free text: "December 9, 2026", "mid-December 2026", "early January 2027", "December 2026"
+function textDates(text) {
+  const re = /\b(?:(early|mid|late|end of|beginning of|the end of|the beginning of)[\s-]+)?(January|February|March|April|May|June|July|August|September|October|November|December)(?:\s+(\d{1,2})(?:st|nd|rd|th)?)?,?\s+(20\d{2})\b/gi;
+  const out = [];
+  for (const m of (text || '').matchAll(re)) {
+    const q = (m[1] || '').toLowerCase();
+    const day = m[3] ? Number(m[3]) : q.includes('early') || q.includes('beginning') ? 5 : q.includes('mid') ? 15 : q.includes('late') || q.includes('end') ? 25 : 1;
+    out.push(ymd(Number(m[4]), MONTHS.indexOf(m[2].toLowerCase()), Math.min(day, 28)));
+  }
+  return [...new Set(out)].sort();
+}
+
+// ---------- helpers ----------
 async function readJson(file, fallback) {
   try { return JSON.parse(await readFile(file, 'utf8')); } catch { return fallback; }
 }
-
 async function get(url) {
-  const res = await fetch(url, { headers: { 'User-Agent': 'copilot-roadmap-tracker (GitHub Actions)', Accept: '*/*' } });
+  const res = await fetch(url, { headers: UA });
   if (!res.ok) throw new Error(`${url} -> HTTP ${res.status}`);
   return res;
 }
-
-const stripHtml = (h) => (h || '').replace(/<br\s*\/?>/gi, '\n').replace(/<\/p>/gi, '\n').replace(/<[^>]+>/g, '')
-  .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')
-  .replace(/&#39;|&apos;/g, "'").replace(/\n{3,}/g, '\n\n').trim();
+const decode = (s) => (s || '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+  .replace(/&quot;/g, '"').replace(/&#x27;|&#39;|&apos;/g, "'").replace(/&#(\d+);/g, (_, n) => String.fromCharCode(n));
+const htmlToText = (h) => decode((h || '')
+  .replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, '')
+  .replace(/<\/?(h[1-6]|p|li|br|div|tr|ul|ol)[^>]*>/gi, '\n')
+  .replace(/<[^>]+>/g, ''))
+  .replace(/[ \t ]+/g, ' ').replace(/ *\n */g, '\n').replace(/\n{2,}/g, '\n').trim();
 
 // ---------- Roadmap ----------
 async function fetchRoadmap() {
   const all = await (await get(ROADMAP_API)).json();
   return all
-    .filter((x) => {
-      const products = (x.tagsContainer?.products || []).map((p) => p.tagName);
-      if (products.some((p) => COPILOT_PRODUCTS.includes(p))) return true;
-      return isCopilotText(x.title) && !NON_M365.test(x.title + ' ' + products.join(' '));
-    })
+    .filter((x) => isCopilot(x.title, (x.tagsContainer?.products || []).map((p) => p.tagName)))
     .map((x) => {
       const tc = x.tagsContainer || {};
+      const description = htmlToText(x.description);
       return {
         id: String(x.id),
         title: x.title,
-        description: stripHtml(x.description),
+        description,
         status: x.status,
         products: (tc.products || []).map((t) => t.tagName),
         platforms: (tc.platforms || []).map((t) => t.tagName),
         cloud: (tc.cloudInstances || []).map((t) => t.tagName),
         phase: (tc.releasePhase || []).map((t) => t.tagName),
-        gaDate: x.publicDisclosureAvailabilityDate || null,
         previewDate: x.publicPreviewDate || null,
+        gaDate: x.publicDisclosureAvailabilityDate || null,
+        preview: roadmapDate(x.publicPreviewDate),
+        ga: roadmapDate(x.publicDisclosureAvailabilityDate),
+        themes: themesOf(`${x.title} ${description}`),
         created: x.created,
         modified: x.modified,
         url: `https://www.microsoft.com/microsoft-365/roadmap?id=${x.id}`,
@@ -63,34 +109,75 @@ async function fetchRoadmap() {
     });
 }
 
-// ---------- Message Center (mc.merill.net) ----------
-function parseRss(xml) {
-  const decode = (s) => (s || '').replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1')
-    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;|&#39;/g, "'").replace(/&amp;/g, '&').trim();
-  const tag = (block, t) => decode((block.match(new RegExp(`<${t}[^>]*>([\\s\\S]*?)</${t}>`)) || [])[1]);
-  return [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].map(([, b]) => {
-    const title = tag(b, 'title');
-    const m = title.match(/^(MC\d+):\s*(.*)$/);
-    return {
-      id: m ? m[1] : tag(b, 'guid'),
-      title: m ? m[2] : title,
-      description: tag(b, 'description'),
-      categories: [...b.matchAll(/<category>([\s\S]*?)<\/category>/g)].map((c) => decode(c[1])).filter((c) => c !== 'Message Center'),
-      published: new Date(tag(b, 'pubDate')).toISOString(),
-      url: tag(b, 'link'),
-    };
+// ---------- Message Center ----------
+function section(text, startRe, endRe) {
+  const s = text.search(startRe);
+  if (s < 0) return '';
+  const rest = text.slice(s).replace(startRe, '').replace(/^[\s:]+/, '');
+  const e = rest.search(endRe);
+  return (e < 0 ? rest : rest.slice(0, e)).trim().slice(0, 1200);
+}
+
+async function messageDetail(id) {
+  const text = htmlToText(await (await get(MC_PAGE(id))).text());
+  const body = text.slice(Math.max(0, text.indexOf('More information')));
+  const schedule = section(body, /Rollout schedule|Rollout timeline|When this will happen|Timeline/i,
+    /\n(Impact on your organization|How this will affect|Who is affected|What will happen|What you need to do|Action required|What you can do|Compliance considerations|Discussion)/i);
+  const action = section(body, /Action required( and recommendations| \/ Recommendations)?|What you need to do to prepare|What you can do to prepare/i,
+    /\n(Compliance considerations|Learn more|Additional information|Discussion)/i);
+  return { schedule, action };
+}
+
+async function fetchMessageCenter(previous) {
+  const index = await (await get(MC_INDEX)).json();
+  const prevById = new Map(previous.map((m) => [m.id, m]));
+  const since = new Date(Date.now() - DETAIL_WINDOW_DAYS * 864e5).toISOString();
+
+  const msgs = index
+    .filter((r) => r.Source === 'messageCenter' && isCopilot(r.Title, r.Services || []))
+    .map((r) => ({
+      id: r.Id,
+      title: r.Title,
+      description: r.Summary || '',
+      services: r.Services || [],
+      tags: r.Tags || [],
+      category: r.Category,
+      major: !!r.IsMajorChange,
+      published: r.StartDateTime,
+      expires: r.EndDateTime,
+      modified: r.LastModifiedDateTime,
+      url: r.Url || MC_PAGE(r.Id),
+    }));
+
+  // Detail pages: only recent messages, and only when new or modified since last run
+  const todo = msgs.filter((m) => {
+    const p = prevById.get(m.id);
+    if (p && p.detailFor === m.modified) { Object.assign(m, { schedule: p.schedule, action: p.action, detailFor: p.detailFor }); return false; }
+    if (p) Object.assign(m, { schedule: p.schedule, action: p.action });
+    return m.published >= since;
   });
+  let done = 0, failed = 0;
+  const queue = [...todo];
+  await Promise.all(Array.from({ length: DETAIL_CONCURRENCY }, async () => {
+    for (let m; (m = queue.shift());) {
+      try { Object.assign(m, await messageDetail(m.id), { detailFor: m.modified }); done++; }
+      catch { failed++; }
+      await new Promise((r) => setTimeout(r, 150));
+    }
+  }));
+  console.log(`messageCenter: read ${done} detail pages${failed ? ` (${failed} failed, will retry next run)` : ''}`);
+
+  for (const m of msgs) {
+    m.dates = textDates(m.schedule || m.description);
+    m.action = (m.action || '').replace(/^[\s\/:]*(Recommendations?)?[\s\/:]*/i, '').trim();
+    const noAction = /no (immediate |additional |further )?(admin(istrator)? )?action (is )?(required|needed)|no action required|there is no action|nothing (you need|is required)/i.test(m.action.slice(0, 200));
+    m.actionRequired = !!m.action && !noAction && (m.category === 'planForChange' || m.tags.includes('Admin impact'));
+    m.themes = themesOf(`${m.title} ${m.description}`, m.tags.includes('Retirement') ? ['retirement'] : []);
+  }
+  return msgs;
 }
 
-const isCopilotMessage = (m) =>
-  m.categories.some((c) => COPILOT_PRODUCTS.includes(c)) ||
-  (isCopilotText(m.title) && !NON_M365.test(m.title) && !m.categories.some((c) => /power platform|power bi|dynamics|dataverse/i.test(c)));
-
-async function fetchMessageCenter() {
-  return parseRss(await (await get(MC_RSS)).text()).filter(isCopilotMessage);
-}
-
-// ---------- Merge with history ----------
+// ---------- merge with history ----------
 function merge(oldItems, newItems, changedKey) {
   const now = new Date().toISOString();
   const map = new Map(oldItems.map((i) => [i.id, i]));
@@ -98,9 +185,14 @@ function merge(oldItems, newItems, changedKey) {
   for (const it of newItems) {
     const prev = map.get(it.id);
     if (!prev) { added++; map.set(it.id, { ...it, firstSeen: now, lastChanged: now }); continue; }
-    const isChanged = changedKey && prev[changedKey] !== it[changedKey];
+    const isChanged = prev[changedKey] !== it[changedKey];
     if (isChanged) changed++;
-    map.set(it.id, { ...it, firstSeen: prev.firstSeen, lastChanged: isChanged ? now : prev.lastChanged, previousStatus: isChanged && prev.status !== it.status ? prev.status : prev.previousStatus });
+    map.set(it.id, {
+      ...it,
+      firstSeen: prev.firstSeen || now,
+      lastChanged: isChanged ? now : prev.lastChanged,
+      previousStatus: isChanged && prev.status && prev.status !== it.status ? prev.status : prev.previousStatus,
+    });
   }
   return { items: [...map.values()], added, changed };
 }
@@ -110,14 +202,17 @@ async function main() {
   const meta = await readJson(join(DATA, 'meta.json'), {});
   const result = { lastRun: new Date().toISOString(), sources: {} };
 
-  for (const [key, file, fn, changedKey, sortKey] of [
-    ['roadmap', 'roadmap.json', fetchRoadmap, 'modified', 'modified'],
-    ['messageCenter', 'messagecenter.json', fetchMessageCenter, null, 'published'],
+  for (const [key, file, fn, sortKey] of [
+    ['roadmap', 'roadmap.json', fetchRoadmap, 'modified'],
+    ['messageCenter', 'messagecenter.json', fetchMessageCenter, 'published'],
   ]) {
     try {
-      const fresh = await fn();
       const old = await readJson(join(DATA, file), []);
-      const { items, added, changed } = merge(old, fresh, changedKey);
+      const fresh = await fn(old);
+      // History is kept, but items that no longer match the Copilot filter are dropped
+      const keep = (i) => isCopilot(i.title, i.products || i.services || []);
+      const { items: merged, added, changed } = merge(old.filter(keep), fresh, 'modified');
+      const items = merged.filter(keep);
       items.sort((a, b) => String(b[sortKey]).localeCompare(String(a[sortKey])));
       await writeFile(join(DATA, file), JSON.stringify(items, null, 1));
       result.sources[key] = { ok: true, total: items.length, fetched: fresh.length, added, changed, updated: result.lastRun };
