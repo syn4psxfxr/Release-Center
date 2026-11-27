@@ -139,7 +139,7 @@
     const list = filtered();
     const shown = list.slice(0, S.shown);
     $('resultInfo').textContent = `${list.length.toLocaleString('en-US')} ${list.length === 1 ? 'update' : 'updates'}`;
-    $('list').innerHTML = shown.length ? shown.map(row).join('') : `<div class="empty">No updates match these filters.</div>`;
+    $('list').innerHTML = shown.length ? shown.map(row).join('') : `<div class="empty">No updates match these filters.<br><button class="link" type="button" data-clear>Clear filters</button></div>`;
     $('btnMore').hidden = list.length <= shown.length;
     const n = [...S.roadmap.map(normRoadmap), ...S.mc.map(normMc)].filter(isNew).length;
     $('unreadLabel').textContent = n ? `New only (${n})` : 'New only';
@@ -196,6 +196,10 @@
   $('btnCheck').onclick = check;
   $('btnMarkAll').onclick = () => { items().forEach((i) => readSet.add(i.key)); saveRead(); render(); };
   $('list').addEventListener('click', (e) => {
+    if (e.target.closest('[data-clear]')) {
+      $('q').value = ''; $('fStatus').value = ''; $('fProduct').value = ''; $('fPeriod').value = '0'; $('fUnread').checked = false;
+      S.shown = PAGE; render(); return;
+    }
     const item = e.target.closest('.item'); if (!item) return;
     if (e.target.closest('.desc')) item.classList.toggle('open');
     if (e.target.closest('a, .desc') && !readSet.has(item.dataset.key)) {
