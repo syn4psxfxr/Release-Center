@@ -1,36 +1,35 @@
-# Copilot Roadmap Tracker
+# Copilot Release Center
 
-Página estática (GitHub Pages) para acompanhar novidades do **Microsoft 365 Copilot** em duas fontes:
+A static GitHub Pages site that tracks **Microsoft 365 Copilot** updates from two sources:
 
-| Fonte | O que traz | Como é lida |
+| Source | What it covers | How it is read |
 |---|---|---|
-| [Microsoft 365 Roadmap](https://www.microsoft.com/microsoft-365/roadmap) (oficial) | Features planejadas, em implantação e lançadas | API pública `releasecommunications/api/v1/m365`, filtrada por Copilot — **só pelo GitHub Action** (a API não permite chamadas do navegador / CORS) |
-| [Message Center Archive – mc.merill.net](https://mc.merill.net/) | Espelho do Message Center do Admin Center (anúncios MC…) | RSS público, filtrado por Copilot — pelo Action **e** ao vivo pelo botão "Verificar agora" |
+| [Microsoft 365 Roadmap](https://www.microsoft.com/microsoft-365/roadmap) (official) | Planned, rolling out and launched features | Public API `releasecommunications/api/v1/m365`, filtered to Copilot. **Action only**, since the API does not allow browser (CORS) requests |
+| [Message Center Archive (mc.merill.net)](https://mc.merill.net/) | Public mirror of the admin center Message Center | Public RSS feed, filtered to Copilot. Read by the Action **and** live by the "Check for updates" button |
 
-## Como funciona
+Live site: https://syn4psxfxr.github.io/Release-Center/
 
-- `scripts/fetch-data.mjs` (Node 18+, sem dependências) baixa as duas fontes, filtra o que é Copilot do M365 e grava `data/roadmap.json`, `data/messagecenter.json` e `data/meta.json`. O histórico é preservado: mensagens antigas que saem do RSS continuam no arquivo, e mudanças de status no Roadmap ficam registradas (`previousStatus`).
-- `.github/workflows/update-data.yml` roda o script **a cada 6 horas** e também manualmente (Actions → *Atualizar dados do Copilot* → *Run workflow*), fazendo commit dos dados novos. O GitHub Pages republica sozinho.
-- Na página, **Verificar agora** recarrega os dados publicados e consulta o Message Center ao vivo. **Atualização completa ↗** abre o workflow no GitHub para rodar a coleta das duas fontes na hora.
-- "Lido / não lido" fica salvo no navegador de cada pessoa (localStorage). Itens dos últimos 14 dias antes da primeira visita aparecem como novos.
+## How it works
 
-## Publicar no GitHub Pages
+- `scripts/fetch-data.mjs` (Node 18+, no dependencies) downloads both sources, keeps only M365 Copilot items, and writes `data/roadmap.json`, `data/messagecenter.json` and `data/meta.json`. History is preserved: messages that drop out of the RSS feed stay in the file, and Roadmap status changes are recorded (`previousStatus`).
+- `.github/workflows/update-data.yml` runs the script **every 6 hours** and on demand (Actions → *Update Copilot data* → *Run workflow*), then commits the new data. GitHub Pages republishes automatically.
+- On the page, **Check for updates** reloads the published data and queries the Message Center live.
+- Read/new state is stored per browser (localStorage). Items from the 14 days before your first visit show as new.
 
-1. Crie um repositório (ex.: `copilot-roadmap`) e envie estes arquivos para a branch `main`.
-2. **Settings → Pages → Build and deployment → Source: Deploy from a branch → `main` / `/ (root)`**.
-3. **Settings → Actions → General → Workflow permissions → Read and write permissions** (para o Action poder commitar os dados).
-4. Rode o workflow uma vez em **Actions → Atualizar dados do Copilot → Run workflow**.
-5. Acesse https://syn4psxfxr.github.io/Release-Center/
+## Setup
 
-> Repositório privado + Pages exige plano GitHub Team/Enterprise. Em Enterprise Cloud dá para restringir o site a membros da organização (Pages privado).
+1. Push this repository to GitHub (branch `main`).
+2. **Settings → Pages → Source: Deploy from a branch → `main` / `/ (root)`**.
+3. **Settings → Actions → General → Workflow permissions → Read and write permissions**.
+4. Run the workflow once from **Actions → Update Copilot data → Run workflow**.
 
-## Testar localmente
+## Run locally
 
 ```powershell
 node scripts/fetch-data.mjs
-npx serve .
+python -m http.server 8000
 ```
 
-## Ajustar o filtro
+## Adjust the filter
 
-Edite `COPILOT_PRODUCTS` e `NON_M365` em `scripts/fetch-data.mjs` (e as constantes equivalentes em `app.js` para a verificação ao vivo).
+Edit `COPILOT_PRODUCTS` and `NON_M365` in `scripts/fetch-data.mjs` (and the matching constants in `app.js` for the live check).

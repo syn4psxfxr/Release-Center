@@ -1,8 +1,8 @@
-// Busca atualizações do Microsoft 365 Copilot em duas fontes e grava em /data:
-//  1) Microsoft 365 Roadmap oficial  -> https://www.microsoft.com/releasecommunications/api/v1/m365
-//  2) Message Center (Admin Center) via arquivo público mc.merill.net -> https://mc.merill.net/rss.xml
-// Sem dependências: roda com Node 18+ (fetch nativo).
-// Mantém histórico: itens já vistos continuam no arquivo, e cada item recebe "firstSeen".
+// Fetches Microsoft 365 Copilot updates from two sources and writes them to /data:
+//  1) Official Microsoft 365 Roadmap -> https://www.microsoft.com/releasecommunications/api/v1/m365
+//  2) Message Center (admin center) via the public mc.merill.net archive -> https://mc.merill.net/rss.xml
+// No dependencies: runs on Node 18+ (native fetch).
+// Keeps history: items already seen stay in the file, and each item gets "firstSeen".
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
@@ -14,10 +14,10 @@ const DATA = join(ROOT, 'data');
 const ROADMAP_API = 'https://www.microsoft.com/releasecommunications/api/v1/m365';
 const MC_RSS = 'https://mc.merill.net/rss.xml';
 
-// Produtos/categorias considerados "Copilot do Microsoft 365"
+// Products/categories treated as "Microsoft 365 Copilot"
 const COPILOT_PRODUCTS = ['Microsoft Copilot (Microsoft 365)', 'Microsoft 365 Copilot Chat', 'Microsoft 365 Copilot'];
 const isCopilotText = (s) => /\bcopilot\b/i.test(s || '');
-// Copilot de outras linhas (Power Platform, Dynamics, Security, GitHub...) fica de fora, salvo se o produto for M365 Copilot
+// Copilot from other product lines (Power Platform, Dynamics, Security, GitHub...) is excluded unless the product is M365 Copilot
 const NON_M365 = /power platform|copilot studio|dynamics|github copilot|security copilot/i;
 
 async function readJson(file, fallback) {
@@ -90,7 +90,7 @@ async function fetchMessageCenter() {
   return parseRss(await (await get(MC_RSS)).text()).filter(isCopilotMessage);
 }
 
-// ---------- Merge com histórico ----------
+// ---------- Merge with history ----------
 function merge(oldItems, newItems, changedKey) {
   const now = new Date().toISOString();
   const map = new Map(oldItems.map((i) => [i.id, i]));
@@ -121,9 +121,9 @@ async function main() {
       items.sort((a, b) => String(b[sortKey]).localeCompare(String(a[sortKey])));
       await writeFile(join(DATA, file), JSON.stringify(items, null, 1));
       result.sources[key] = { ok: true, total: items.length, fetched: fresh.length, added, changed, updated: result.lastRun };
-      console.log(`${key}: ${fresh.length} itens Copilot (${added} novos, ${changed} alterados, ${items.length} no histórico)`);
+      console.log(`${key}: ${fresh.length} Copilot items (${added} new, ${changed} changed, ${items.length} in history)`);
     } catch (e) {
-      console.error(`${key}: falhou ->`, e.message);
+      console.error(`${key}: failed ->`, e.message);
       result.sources[key] = { ...(meta.sources?.[key] || {}), ok: false, error: e.message };
     }
   }

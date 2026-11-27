@@ -1,78 +1,70 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Copilot Roadmap Tracker</title>
-  <meta name="description" content="Acompanhamento das novidades do Microsoft 365 Copilot: Roadmap oficial da Microsoft + Message Center (Admin Center).">
+  <title>Copilot Release Center</title>
+  <meta name="description" content="Microsoft 365 Copilot updates from the official Microsoft 365 Roadmap and the Message Center.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%235b5fc7'/><path d='M9 21l5-10 4 7 2-3 3 6' stroke='white' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="top">
-    <div class="wrap top-inner">
-      <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div>
-          <h1>Copilot Roadmap Tracker</h1>
-          <p class="sub">Microsoft 365 Copilot · Roadmap oficial + Message Center</p>
-        </div>
-      </div>
-      <div class="actions">
-        <span id="lastUpdate" class="muted small"></span>
-        <button id="btnCheck" class="btn primary" type="button">
-          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Verificar agora
-        </button>
-        <a id="btnWorkflow" class="btn" target="_blank" rel="noopener" hidden>Atualização completa ↗</a>
-        <button id="btnTheme" class="btn icon" type="button" aria-label="Alternar tema" title="Alternar tema">◐</button>
-      </div>
+  <header class="wrap top">
+    <div>
+      <h1>Copilot Release Center</h1>
+      <p class="muted">Microsoft 365 Copilot · Roadmap and Message Center</p>
+    </div>
+    <div class="actions">
+      <span id="lastUpdate" class="muted small"></span>
+      <button id="btnCheck" class="btn" type="button">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Check for updates
+      </button>
+      <button id="btnTheme" class="btn icon" type="button" aria-label="Toggle theme" title="Toggle theme">◐</button>
     </div>
   </header>
 
   <main class="wrap">
     <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
-    <section class="kpis" id="kpis"></section>
-
     <nav class="tabs" role="tablist">
-      <button role="tab" data-tab="news" class="tab active">Novidades</button>
-      <button role="tab" data-tab="roadmap" class="tab">Roadmap oficial <span class="count" id="cRoadmap"></span></button>
+      <button role="tab" data-tab="all" class="tab active">All</button>
+      <button role="tab" data-tab="roadmap" class="tab">Roadmap <span class="count" id="cRoadmap"></span></button>
       <button role="tab" data-tab="mc" class="tab">Message Center <span class="count" id="cMc"></span></button>
     </nav>
 
     <section class="filters">
-      <input id="q" type="search" placeholder="Buscar por título, descrição, ID (ex.: MC1568700, 498765)…" aria-label="Buscar">
+      <input id="q" type="search" placeholder="Search title, description or ID" aria-label="Search">
       <select id="fStatus" aria-label="Status"></select>
-      <select id="fProduct" aria-label="Produto / categoria"></select>
-      <select id="fPeriod" aria-label="Período">
-        <option value="0">Qualquer data</option>
-        <option value="7">Últimos 7 dias</option>
-        <option value="30" selected>Últimos 30 dias</option>
-        <option value="90">Últimos 90 dias</option>
-        <option value="365">Último ano</option>
+      <select id="fProduct" aria-label="Product"></select>
+      <select id="fPeriod" aria-label="Period">
+        <option value="0">Any time</option>
+        <option value="7">Last 7 days</option>
+        <option value="30" selected>Last 30 days</option>
+        <option value="90">Last 90 days</option>
+        <option value="365">Last year</option>
       </select>
-      <select id="fSort" aria-label="Ordenar">
-        <option value="date">Mais recentes</option>
-        <option value="ga">Data de lançamento (GA)</option>
-        <option value="title">Título A–Z</option>
-      </select>
-      <label class="check"><input id="fUnread" type="checkbox"> Só não lidos</label>
-      <button id="btnMarkAll" class="btn ghost small" type="button">Marcar visíveis como lidos</button>
     </section>
 
-    <p id="resultInfo" class="muted small"></p>
+    <div class="bar">
+      <span id="resultInfo" class="muted small"></span>
+      <span class="bar-actions">
+        <label class="check small"><input id="fUnread" type="checkbox"> <span id="unreadLabel">New only</span></label>
+        <button id="btnMarkAll" class="link small" type="button">Mark all as read</button>
+      </span>
+    </div>
+
     <section id="list" class="list"></section>
-    <div class="more-wrap"><button id="btnMore" class="btn" type="button" hidden>Mostrar mais</button></div>
+    <div class="more-wrap"><button id="btnMore" class="btn" type="button" hidden>Show more</button></div>
   </main>
 
   <footer class="wrap foot muted small">
-    Fontes: <a href="https://www.microsoft.com/microsoft-365/roadmap?filters=Microsoft%20Copilot%20(Microsoft%20365)" target="_blank" rel="noopener">Microsoft 365 Roadmap</a> (oficial) e
-    <a href="https://mc.merill.net/" target="_blank" rel="noopener">Message Center Archive (mc.merill.net)</a>, espelho público do Message Center do Admin Center.
-    Posts do Message Center variam por tenant — confirme sempre no <a href="https://admin.microsoft.com/#/MessageCenter" target="_blank" rel="noopener">Message Center do seu tenant</a>.
-    Itens “lidos” ficam salvos apenas neste navegador.
+    Sources: <a href="https://www.microsoft.com/microsoft-365/roadmap?filters=Microsoft%20Copilot%20(Microsoft%20365)" target="_blank" rel="noopener">Microsoft 365 Roadmap</a>
+    and <a href="https://mc.merill.net/" target="_blank" rel="noopener">Message Center Archive</a>.
+    Message Center posts vary by tenant; confirm in your <a href="https://admin.microsoft.com/#/MessageCenter" target="_blank" rel="noopener">admin center</a>.
+    Data refreshes every 6 hours<span id="wfLink"></span>.
   </footer>
 
   <script src="app.js"></script>
